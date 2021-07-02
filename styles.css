@@ -1,0 +1,49 @@
+body{
+    font-family: 'Roboto', sans-serif;
+}
+
+#content-div {
+    padding: 20px;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    min-height: 70px;
+}
+
+#upload {
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#table-products{
+    border: 1px solid #121212;
+}
+
+
+/* .form-control {
+    width: 40%;
+} */
+
+
+#selectors {
+    display: none;
+}
+
+#selectors2 {
+    display: none;
+}
+
+#div-table {
+    margin-top: 20px;
+    display: none;
+}
+
+/* .fecha {
+    display: inline-block;
+    margin: 20px 0 20px 0px;
+} */
+
+
+

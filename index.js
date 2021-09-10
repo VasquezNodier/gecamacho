@@ -1,10 +1,10 @@
 console.log('GECamacho');
 
+
 let listaProductos = [];
 let original_productos = [];
 let actualizar = [];
-let empresas = ['Nelson Damián Camacho Suarez', 'Cesar Darío Camacho Suarez', 'MWO S.A.S', 'Mundo Cross Bogotá S.A.S', 'Moto World Oriente S.A.S.']
-
+let empresas = ['Nelson Damián Camacho Suarez', 'Mundo Cross LTDA', 'MWO S.A.S', 'Mundo Cross Bogotá S.A.S', 'Moto World Oriente S.A.S.']
 
 const item = document.getElementById('items');
 const templateLista = document.getElementById('template-lista').content;
@@ -17,39 +17,295 @@ let tablaProducto = document.getElementById('div-table');
 let selector2 = document.getElementById('selectors2');
 let company = document.getElementById('company');
 
+var es_moto = false;
+var doc_proveedor = false;
+var repuestos = [];
+var proveedor = [];
+
+
 item.addEventListener('click', e => { borrarFila(e) })
 
+document.getElementById('motos').onclick = () => {
+    document.getElementById('titulo').innerHTML = 'Actualización de precios de Motocicletas';
+    change_visual();
+    es_moto = true
+}
+
+document.getElementById('repuestos').onclick = () => {
+        document.getElementById('titulo').innerHTML = 'Actualización de precios de Repuestos';
+        change_visual();
+        es_moto = false
+    }
+    //Change visual elements
+function change_visual() {
+    document.getElementById('seleccion').style.display = 'none';
+    document.getElementById('content-div').style.display = 'block';
+}
+
 //Aquí se carga el documento y la información.
-document.getElementById('btnUpload').onclick = function () {
+document.getElementById('btnUpload').onclick = () => {
+    upload_doc();
+};
+
+//Aquí se carga el documento y la información.
+document.getElementById('btnUploadVendorFile').onclick = () => {
+    doc_proveedor = true;
+    upload_doc_vendor();
+};
+
+function upload_doc() {
     // Se valida si el se pulsa el botón "Cargar" sin un archivo y si el archivo no contiene el formato ".CSV"
     if ($('#fileToUpload').get(0).files.length == 0) {
+        alert('¡Por favor cargue el archivo!');
         refreshPage();
-        alert('¡Por favor cargue el archivo primero!');
+    } else {
+
+        let fileUpload = $('#fileToUpload').get(0);
+        let files = fileUpload.files;
+        let reader = new FileReader();
+        let extension = documento_valido(files[0].name);
+
+        if (extension === 'otro') {
+            alert("Por favor solo cargue archivos .XLS o .XLSX");
+            refreshPage();
+        } else {
+            reader.onload = function(e) {
+
+                if (extension === 'csv') {
+                    doc_text = e.target.result.split("\n"); // Dividimos texto del documento por salto de línea.
+                    convert_csv_to_array(doc_text);
+                } else {
+                    var data = "";
+                    var bytes = new Uint8Array(e.target.result);
+                    for (var i = 0; i < bytes.byteLength; i++) {
+                        data += String.fromCharCode(bytes[i]);
+                    }
+                    process_Excel(data);
+                }
+            }
+
+            if (extension === 'csv') {
+                reader.readAsText($("#fileToUpload")[0].files[0]);
+            } else {
+                reader.readAsArrayBuffer($("#fileToUpload")[0].files[0]);
+            }
+        }
+        $('input[type="file"]').val('');
+    }
+};
+
+
+function upload_doc_vendor() {
+    // Se valida si el se pulsa el botón "Cargar" sin un archivo y si el archivo no contiene el formato ".CSV"
+    if ($('#UploadVendorFile').get(0).files.length == 0) {
+        alert('¡Por favor cargue el archivo!');
+        refreshPage();
     }
 
-    let fileUpload = $('#fileToUpload').get(0);
+    let fileUpload = $('#UploadVendorFile').get(0);
     let files = fileUpload.files;
     let reader = new FileReader();
+    let extension = documento_valido(files[0].name);
 
-    if (files[0].name.toLowerCase().lastIndexOf('.csv') == -1) {
+    if (extension === 'otro') {
+        alert("Por favor solo cargue archivos .XLS o .XLSX");
         refreshPage();
-        alert("Por favor solo cargue archivos .CSV");
     } else {
-        reader.onload = function (e) {
-            doc_text = e.target.result.split("\n"); // Dividimos texto del documento por salto de línea.
-            convert_to_array(doc_text);
+        reader.onload = function(e) {
 
+            if (extension === 'csv') {
+                doc_text = e.target.result.split("\n"); // Dividimos texto del documento por salto de línea.
+                convert_csv_to_array(doc_text);
+            } else {
+                var data = "";
+                var bytes = new Uint8Array(e.target.result);
+                for (var i = 0; i < bytes.byteLength; i++) {
+                    data += String.fromCharCode(bytes[i]);
+                }
+                process_Excel_Vendor(data);
+            }
         }
-        reader.readAsText($("#fileToUpload")[0].files[0]);
+
+        if (extension === 'csv') {
+            reader.readAsText($("#UploadVendorFile")[0].files[0]);
+        } else {
+            reader.readAsArrayBuffer($("#UploadVendorFile")[0].files[0]);
+        }
     }
     $('input[type="file"]').val('');
 };
+
+function process_Excel(data) {
+    //Read the Excel File data.
+    var workbook = XLSX.read(data, {
+        type: 'binary'
+    });
+
+    //Fetch the name of First Sheet.
+    var firstSheet = workbook.SheetNames[0];
+
+    //Read all rows from First Sheet into an JSON array.
+    var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+
+    if (es_moto === true) {
+        procesar_moto(excelRows);
+    } else {
+        procesar_repuestos(excelRows);
+    }
+
+};
+
+function process_Excel_Vendor(data) {
+    //Read the Excel File data.
+    var workbook = XLSX.read(data, {
+        type: 'binary'
+    });
+
+    //Fetch the name of First Sheet.
+    var firstSheet = workbook.SheetNames[0];
+
+    //Read all rows from First Sheet into an JSON array.
+    var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+
+    if (doc_proveedor === true) {
+        procesar_proveedor(excelRows);
+    }
+
+};
+
+function procesar_moto(motos) {
+
+    let prod = {};
+    arr = [];
+
+    refs = [];
+    mods = [];
+
+    //Add the data rows from Excel file.
+    for (var i = 0; i < motos.length; i++) {
+        //Add the data row.
+        if (motos[i]['Atributos del Valor'] !== 'FALSE' && es_moto) {
+            if (i % 2 == 0) {
+                prod = motos[i]
+            } else {
+                motos[i]['Atributos del Valor'] = motos[i]['Atributos del Valor'].replace('MODELO: ', '');
+                Object.assign(prod, motos[i])
+                arr.push(prod)
+            }
+        }
+    }
+
+    arr.forEach(element => {
+        if (!(refs.includes(element['Referencia Interna']))) {
+            refs.push(element['Referencia Interna'])
+        }
+
+        el = element['Atributos del Valor'].replace('MODELO: ', '');
+        if (!(mods.includes(el))) {
+            mods.push(el);
+        }
+    });
+    genera_selectores(mods, refs)
+    validar_seleccion(arr)
+}
+
+function procesar_repuestos(reptos) {
+    repuestos = reptos;
+    document.getElementById('upload').style.display = 'none';
+    document.getElementById('upload-proveedor').style.display = 'inline-block';
+    console.log(repuestos);
+}
+
+function procesar_proveedor(archivoProveedor) {
+    proveedor = [];
+    console.log(archivoProveedor);
+    archivoProveedor.forEach(element => {
+        element['HOMOLOGACIONES'] = [];
+        element['PARTE No.'] = element['PARTE No.'].replace(' ', '');
+        if (element['PARTE No.'].indexOf('*') === -1) {
+            proveedor.push(element)
+        } else {
+            proveedor[proveedor.length - 1]['HOMOLOGACIONES'].push(element['PARTE No.'].replace('*', '').trim());
+        }
+    });
+
+    console.log(proveedor);
+
+    let i = 0,
+        update = [];
+    let hay = {};
+
+    repuestos.forEach(element => {
+
+        buscarElemento(proveedor, element['default_code']);
+
+        // proveedor.forEach(producto => {
+        //         if (element['default_code'] === producto['PARTE No.']) {
+        //             console.log(i, 'shiii', element['default_code'], '<<<>>>', producto['PARTE No.']);
+        //             i++;
+        //         } else if (producto['HOMOLOGACIONES'].includes(element['default_code'])) {
+        //             console.log(i, 'shiii', element['default_code'], '<<<>>>', producto['HOMOLOGACIONES']);
+        //             i++;
+        //         }
+        //     })
+        i++;
+    });
+
+    document.getElementById('upload-proveedor').style.display = 'none';
+}
+
+// function buscarElemento(arreglo, texto) {
+//     let menor = 0;
+//     let mayor = arreglo.length - 1;
+//     while (menor <= mayor) {
+//         let mitad = menor + Math.floor((mayor - menor) / 2);
+
+//         let res = texto.localeCompare(arreglo[mitad]['PARTE No.']);
+
+//         // Check if x is present at mid
+//         if (res == 0)
+//             return mitad;
+
+//         // If x greater, ignore left half
+//         if (res > 0)
+//             menor = mitad + 1;
+
+//         // If x is smaller, ignore right half
+//         else
+//             mayor = mitad - 1;
+//     }
+
+//     return -1;
+// }
+
+function buscarElemento(arreglo, texto) {
+    arreglo.forEach(producto => {
+        if (texto === producto['PARTE No.']) {
+            console.log(producto);
+        } else if (producto['HOMOLOGACIONES'].includes(texto)) {
+            console.log(producto);
+        }
+    })
+}
+
+
+
+// Verificar si se ingresa un archivo con la extensión apropiada.
+function documento_valido(name) {
+    if (name.lastIndexOf('.csv') != -1) {
+        return 'csv';
+    } else if (name.lastIndexOf('.xlsx') != -1) {
+        return 'xlsx';
+    } else {
+        return 'otro';
+    }
+}
 
 // Refrescar la página
 const refreshPage = () => window.location.reload();
 
 //Corvertimos el texto separado por comas del archivo en un array
-const convert_to_array = (rows) => {
+const convert_csv_to_array = (rows) => {
     let list_moto = [];
     let productos = [];
     let cells = []
@@ -68,7 +324,7 @@ const convert_to_array = (rows) => {
     for (let i = 0; i < productos.length; i++) {
         for (let j = 0; j < productos[i].length; j++) {
             productos[i][j] = productos[i][j].replace(new RegExp('"', 'g'), ''); // Quitamos las commillas de más
-            productos[i][j] = productos[i][j].replace(new RegExp('\r', 'g'), '');// Quitamos la regExp
+            productos[i][j] = productos[i][j].replace(new RegExp('\r', 'g'), ''); // Quitamos la regExp
 
         }
         productos[i].splice(4, 3); // Elmininamos la posición 4 del arreglo en la que hay 3 elementos vacíos
@@ -94,8 +350,8 @@ const convert_to_array = (rows) => {
 // Se crea un array de objetos
 const generar_objeto = (productos, keys) => {
     //Convertimos el array actual de productos a un array de objetos
-    var dict_productos = productos.map(function (values) {
-        return keys.reduce(function (o, k, i) {
+    var dict_productos = productos.map(function(values) {
+        return keys.reduce(function(o, k, i) {
             o[k] = values[i];
             return o;
         }, {});
@@ -136,18 +392,16 @@ function filtrar_items(params) {
 
 // Se consultan los datos que hay en el arreglo inicial de productos y se 
 // guardan para crear una tabla en base a sus valores
-function obtener_datos(productos) {
-    let headers = ['id', 'referencia', 'nombre', 'color', 'modelo']
-    productos = generar_objeto(productos, headers);
+function validar_seleccion(productos) {
     original_productos = productos.slice();
     document.getElementById('agregar-info').addEventListener('click', e => {
 
-        let obj = Array.from(document.querySelectorAll('#selectors input')).reduce((acc, input) => ({ ...acc, [input.name]: input.value }), {});
+        let obj = Array.from(document.querySelectorAll('#selectors input')).reduce((acc, input) => ({...acc, [input.name]: input.value }), {});
 
         if (obj.referencia && obj.modelo && obj.precio) {
             let esCorrecto = false;
             productos.forEach(element => {
-                if (element.referencia == obj.referencia && element.modelo == obj.modelo) {
+                if (element['Referencia Interna'] === obj.referencia && element['Atributos del Valor'] === obj.modelo) {
                     esCorrecto = true;
                     $('input[type="text"]').val('');
                     $('input[type="number"]').val('');
@@ -160,7 +414,43 @@ function obtener_datos(productos) {
                     alert('¡El producto fue ingresado en la lista!')
                 }
             } else {
-                alert('¡Información no válida!')
+                alert('¡Revise la referencia y el modelo!')
+            }
+        } else {
+            alert('¡Los datos deben completarse!');
+        }
+    })
+    document.getElementById('return-page').addEventListener('click', () => refreshPage());
+}
+
+// Se consultan los datos que hay en el arreglo inicial de productos y se 
+// guardan para crear una tabla en base a sus valores
+function obtener_datos(productos) {
+    let headers = ['id', 'referencia', 'nombre', 'color', 'modelo']
+    productos = generar_objeto(productos, headers);
+    original_productos = productos.slice();
+    document.getElementById('agregar-info').addEventListener('click', e => {
+
+        let obj = Array.from(document.querySelectorAll('#selectors input')).reduce((acc, input) => ({...acc, [input.name]: input.value }), {});
+
+        if (obj.referencia && obj.modelo && obj.precio) {
+            let esCorrecto = false;
+            productos.forEach(element => {
+                if (element.referencia == obj.referencia && element.modelo == obj.modelo) {
+                    esCorrecto = true;
+                    $('input[type="text"]').val('');
+                    $('input[type="number"]').val('');
+                }
+            });
+            if (esCorrecto == true) { // Se utiliza la bandera para agregar el producto a la lista
+                if (!listaProductos.find(o => o.referencia === obj.referencia && o === obj.modelo)) {
+                    console.log(o);
+                    agregarProducto(obj);
+                } else {
+                    alert('¡El producto fue ingresado en la lista!')
+                }
+            } else {
+                alert('¡Revise la referencia y el modelo!')
             }
         } else {
             alert('¡Los datos deben completarse!');
@@ -192,7 +482,7 @@ function pintarTabla() {
     items.appendChild(fragment);
 
     $(document).on('click', '#vaciar-todo', () => {
-        Array.prototype.remove = Array.prototype.remove || function () {
+        Array.prototype.remove = Array.prototype.remove || function() {
             this.splice(0, this.length);
         };
         listaProductos.remove();
@@ -208,7 +498,7 @@ const borrarFila = e => {
     pintarTabla();
 }
 
-$(document).on('click', 'button#confirmar', function (e) {
+$(document).on('click', 'button#confirmar', function(e) {
     newProducto = {}
     actualizar.splice(0)
     if (listaProductos.length !== 0) {
@@ -227,7 +517,7 @@ $(document).on('click', 'button#confirmar', function (e) {
     }
 });
 
-$(document).on('click', 'a#confirmarTodo', function (e) {
+$(document).on('click', 'a#confirmarTodo', function(e) {
     let company = document.getElementById('input-company').value;
     let inicio = document.getElementById('start-date').value;
     let fin = document.getElementById('end-date').value;
@@ -237,21 +527,22 @@ $(document).on('click', 'a#confirmarTodo', function (e) {
     if (company && inicio && fin) {
         if (empresas.indexOf(company) !== -1) {
             if (comparaFecha(inicio, fin)) {
+
                 if (listaProductos.length !== 0) {
                     if (window.confirm("Revise muy bien las fechas!")) {
-                        let aux = 1;
+                        let fila = 1;
                         listaProductos.forEach(lista => {
                             original_productos.forEach(original => {
-                                if (lista.referencia === original.referencia && lista.modelo === original.modelo) {
-                                    id = original.id
-                                    delete original.color;
-                                    delete original.modelo;
-                                    delete original.nombre;
-                                    delete original.referencia;
+                                if (lista.referencia === original['Referencia Interna'] && lista.modelo === original['Atributos del Valor']) {
+                                    id = original['ID']
+                                    delete original['Atributos del Valor'];
+                                    delete original['Nombre'];
+                                    delete original['Referencia Interna'];
+                                    delete original['Es vehículo'];
+                                    delete original['Tipo de producto'];
                                     newProducto = original;
-                                    newProducto['id'] = 'test';
-                                    if (aux == 1) {
-                                        delete newProducto.id;
+                                    if (fila == 1) {
+                                        delete newProducto['ID'];
                                         newProducto['company'] = company;
                                         newProducto['Lista de precios'] = getNombreLista(inicio);
                                         newProducto['Política de descuento'] = 'Descuento incluido en el precio';
@@ -263,9 +554,9 @@ $(document).on('click', 'a#confirmarTodo', function (e) {
                                         newProducto['item_ids/compute_price'] = 'Fixed Price';
                                         newProducto['item_ids/fixed_price'] = lista.precio;
                                         actualizar.push(newProducto);
-                                        
+
                                     } else {
-                                        delete newProducto.id;
+                                        delete newProducto['ID'];
                                         newProducto['company'] = '';
                                         newProducto['Lista de precios'] = '';
                                         newProducto['Política de descuento'] = '';
@@ -278,12 +569,12 @@ $(document).on('click', 'a#confirmarTodo', function (e) {
                                         newProducto['item_ids/fixed_price'] = lista.precio;
                                         actualizar.push(newProducto);
                                     }
-                                    aux++;
+                                    fila++;
                                 }
                             });
                         });
                         csvData = objectToCsv(actualizar);
-                        actualizar = Object.assign({}, actualizar)
+                        actualizar = Object.assign({}, actualizar);
                         download(csvData);
                     }
                 } else {
@@ -304,7 +595,7 @@ $(document).on('click', 'a#confirmarTodo', function (e) {
 function comparaFecha(fecha1, fecha2) {
     fecha1 = new Date(fecha1);
     fecha2 = new Date(fecha2);
-    if (fecha1 < fecha2) {
+    if (fecha1 <= fecha2) {
         return true;
     } else {
         return false;
@@ -316,7 +607,10 @@ function getNombreLista(inicio) {
     inicio = new Date(inicio);
 
     let nombre = 'Precios ';
-    let periodo = '', mes = '', hora = '', dia = '';
+    let periodo = '',
+        mes = '',
+        hora = '',
+        dia = '';
 
     if (inicio.getUTCDate() > 15) {
         periodo = 'L2';
@@ -326,7 +620,7 @@ function getNombreLista(inicio) {
     if (inicio.getUTCDate() > 9) {
         dia = inicio.getUTCDate();
     } else {
-        dia = '0'+inicio.getUTCDate();
+        dia = '0' + inicio.getUTCDate();
     }
     if (inicio.getMonth() + 1 > 9) {
         mes = inicio.getMonth() + 1;
@@ -364,7 +658,7 @@ function objectToCsv(lista) {
 }
 
 // Descargamos el documento con el nombre product.csv
-const download = function (data) {
+const download = function(data) {
     const blob = new Blob(["\uFEFF" + data], { type: '"text/csv; charset=utf-8"' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');

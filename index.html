@@ -10,13 +10,15 @@
     <meta name="robots" content="noindex,follow">
     <title>GE-Camacho</title>
 
+    <link rel="icon" href="./images/favicon.png" type="image/x-icon">
+
+
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
     <!--CSS-->
-    <link href="/styles.css" rel="stylesheet" />
+    <link href="./styles.css" rel="stylesheet" />
 
     <!--FONTS-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -25,55 +27,49 @@
 </head>
 
 <body>
+
     <header>
-        <nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">GE-Camacho</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 ">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Dropdown
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                        </li>
-                    </ul>
-
-                </div>
-            </div>
-        </nav>
+        <h3 id="titulo">Actualización de precios</h3>
+        <h5 id="titulo">Grupo Empresarial Camacho</h5>
     </header>
 
-    <article>
+    <div id="seleccion" class="row container">
+        <div class="col">
+            <button value="motos" id="motos" class="opcion shadow">
+                <img src="./images/motorbike.svg" alt="motorbike" class="row__col-moto">
+                <b>Motocicletas</b>
+            </button>
+        </div>
+        <div class="col">
+            <button id="repuestos" value="repuestos" class="opcion shadow">
+                <img src="./images/car-parts.svg" alt="repuestos" class="row__col-repuestos">
+                <b>Repuestos</b>
+            </button>
+        </div>
+    </div>
+
+    <div>
         <div id="content-div" class="container">
-            <h5>ACTUALIZACIÓN DE PRECIOS DE MOTOCICLETAS</h5>
+
             <div id="upload">
-                <p id="text-ini">Recuerda que debes subir el documento 'product.product.csv' que descargaste
-                    de ODOO.</p>
+                <p id="text-ini">Adjunta el documento que descargaste desde ODOO.</p>
                 <form action="/" enctype=multipart/form-data method="post">
                     <div class="input-group">
-                        <input type="file" class="form-control" id="fileToUpload">
+                        <input type="file" class="form-control" accept=".xlsx" id="fileToUpload">
                         <a class="btn btn-outline-secondary" id="btnUpload">
+                            Cargar
+                        </a>
+
+                    </div>
+                </form>
+            </div>
+
+            <div id="upload-proveedor">
+                <p id="text-ini">Adjunta el archivo excel del proveedor.</p>
+                <form action="/" enctype=multipart/form-data method="post">
+                    <div class="input-group">
+                        <input type="file" class="form-control" accept=".xlsx" id="UploadVendorFile">
+                        <a class="btn btn-outline-secondary" id="btnUploadVendorFile">
                             Cargar
                         </a>
 
@@ -86,15 +82,13 @@
 
                 <div class="col-md-4">
                     <label for="input-refs" class="form-label"><b>Referencias:</b></label>
-                    <input id="input-refs" name="referencia" class="form-control" type="text" list="referencias"
-                        placeholder="Seleccione la referencia">
+                    <input id="input-refs" name="referencia" class="form-control" type="text" list="referencias" placeholder="Seleccione la referencia">
                     <datalist id="referencias"></datalist>
                 </div>
 
                 <div class="col-md-4">
                     <label for="input-mod" class="form-label"><b>Modelos:</b></label>
-                    <input id="input-mod" name="modelo" class="form-control" type="text" list="modelos"
-                        placeholder="Seleccione el modelo">
+                    <input id="input-mod" name="modelo" class="form-control" type="text" list="modelos" placeholder="Seleccione el modelo">
                     <datalist id="modelos"></datalist>
                 </div>
 
@@ -143,8 +137,7 @@
                                 <button class="btn btn-danger" id="vaciar-todo">
                                     Vaciar
                                 </button>
-                                <button class="btn btn-success" id="confirmar" data-toggle="modal"
-                                    data-target="#exampleModalCenter">
+                                <button class="btn btn-success" id="confirmar" data-toggle="modal" data-target="#exampleModalCenter">
                                     Confirmar
                                 </button>
                             </td>
@@ -160,8 +153,7 @@
 
                 <div class="col-md-4">
                     <label for="input-company" class="form-label"><b>Compañía:</b></label>
-                    <input id="input-company" name="company" class="form-control" type="text" list="company"
-                        placeholder="Seleccione la companía">
+                    <input id="input-company" name="company" class="form-control" type="text" list="company" placeholder="Seleccione la companía">
                     <datalist id="company"></datalist>
                 </div>
                 <div class="col-md-4">
@@ -191,15 +183,19 @@
 
             </div>
 
-
         </div>
 
+    </div>
+    </div>
 
+
+    <footer class="bg-light text-center text-lg-start">
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2021 Copyright:
+            <a class="text-dark" href="https://sofoz.com.co">sofoz.com.co</a>
         </div>
-    </article>
-
-    <footer>
-
+        <!-- Copyright -->
     </footer>
 
     <template id="template-lista">
@@ -222,20 +218,18 @@
         </div>
     </template>
 
-    <!--JQUERY-->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
+
+    <!--JQUERY-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
     <!--JS-->
-    <script src="/index.js"></script>
+    <script src="./index.js"></script>
 
     <!--Separate Popper and Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"
-        integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT"
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
 
 </body>
 

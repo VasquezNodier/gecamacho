@@ -1,23 +1,40 @@
-body{
+* {
+    box-sizing: border-box;
+}
+
+body {
     font-family: 'Roboto', sans-serif;
 }
 
-#content-div {
-    padding: 20px;
+header {
+    padding: 20px 10px 20px 10px;
 }
 
-.navbar {
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
-    min-height: 70px;
+h3,
+h5 {
+    text-align: center;
+    color: #B83D1A;
+}
+
+#content-div {
+    padding: 10px;
 }
 
 #upload {
     display: inline-block;
     margin-top: 10px;
     margin-bottom: 10px;
+    width: 100%;
 }
 
-#table-products{
+#upload-proveedor {
+    display: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+#table-products {
     border: 1px solid #121212;
 }
 
@@ -25,7 +42,6 @@ body{
 /* .form-control {
     width: 40%;
 } */
-
 
 #selectors {
     display: none;
@@ -40,10 +56,81 @@ body{
     display: none;
 }
 
+
 /* .fecha {
     display: inline-block;
     margin: 20px 0 20px 0px;
 } */
 
+.row {
+    margin: 10px auto;
+}
 
+.col {
+    position: relative;
+    text-align: center;
+}
 
+.row__col-moto,
+.row__col-repuestos {
+    height: 12rem;
+}
+
+.opcion {
+    position: relative;
+    border-radius: 20%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    width: 12rem;
+    background-color: #B1F06D90;
+}
+
+button {
+    border: none;
+}
+
+button:hover {
+    background-color: #ED8668;
+}
+
+b {
+    position: absolute;
+    bottom: 3px;
+    left: 0;
+    right: 0;
+}
+
+#content-div {
+    display: none;
+}
+
+html {
+    min-height: 100%;
+    position: relative;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+@media only screen and (max-width: 400px) {
+    .opcion {
+        position: relative;
+        border-radius: 20%;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        width: 9rem;
+        background-color: #B1F06D90;
+    }
+    button img {
+        width: 6rem;
+    }
+}

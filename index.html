@@ -77,6 +77,10 @@
                 </form>
             </div>
 
+            <div class="spinner-border" id="cargando" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+
             <form class="row g-2" id="selectors">
                 <h6 id="tx-desc">Selecciona los vehículos que quieres actualizar.</h6>
 
@@ -179,11 +183,103 @@
 
             </form>
 
+            <div class="row" id="cards-info">
+                <div class="col-lg-4">
+                    <div class="card card-margin">
+                        <div class="card-header no-border">
+                            <h5 class="card-title">Referencias Encontradas</h5>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="widget-49">
+                                <div class="widget-49-title-wrapper">
+                                    <div class="widget-49-date-success">
+                                        <span class="widget-49-date-day" id="cant-finded">0</span>
+                                    </div>
+                                    <div class="widget-49-meeting-info">
+                                        <span class="widget-49-pro-title">Artículos</span>
+                                        <span class="widget-49-meeting-time" id="cant-vendor">de 0</span>
+                                    </div>
+                                </div>
+                                <ol class="widget-49-meeting-points">
+                                    <li class="widget-49-meeting-item"><span>Descargar el archivo</span></li>
+                                    <li class="widget-49-meeting-item"><span>Ir a Ventas/Tarifas en ODOO</span></li>
+                                    <li class="widget-49-meeting-item"><span>Crear una nueva lista</span></li>
+                                    <li class="widget-49-meeting-item"><span>Importar este documento</span></li>
+                                </ol>
+                                <div class="widget-49-meeting-action">
+                                    <a href="#" class="btn btn-sm btn-outline-success descargar" id="generar-encontrados">Descargar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card card-margin">
+                        <div class="card-header no-border">
+                            <h5 class="card-title">Referencias Homologadas</h5>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="widget-49">
+                                <div class="widget-49-title-wrapper">
+                                    <div class="widget-49-date-primary">
+                                        <span class="widget-49-date-day" id="cant-homolo">0</span>
+                                    </div>
+                                    <div class="widget-49-meeting-info">
+                                        <span class="widget-49-pro-title">Artículos</span>
+                                        <span class="widget-49-meeting-time" id="cant-vendor">de 0</span>
+                                    </div>
+                                </div>
+                                <ol class="widget-49-meeting-points">
+                                    <li class="widget-49-meeting-item"><span>Estos son </span></li>
+                                    <li class="widget-49-meeting-item"><span>Los pasos</span></li>
+                                    <li class="widget-49-meeting-item"><span>Que debes</span></li>
+                                    <li class="widget-49-meeting-item"><span>Seguir</span></li>
+                                </ol>
+                                <div class="widget-49-meeting-action">
+                                    <a href="#" class="btn btn-sm btn-outline-primary descargar" id="generar-homologados">Descargar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card card-margin">
+                        <div class="card-header no-border">
+                            <h5 class="card-title">Referencias NO Encontradas</h5>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="widget-49">
+                                <div class="widget-49-title-wrapper">
+                                    <div class="widget-49-date-warning">
+                                        <span class="widget-49-date-day" id="cant-no-finded">0</span>
+                                    </div>
+                                    <div class="widget-49-meeting-info">
+                                        <span class="widget-49-pro-title">Artículos</span>
+                                        <span class="widget-49-meeting-time" id="cant-vendor">de 0</span>
+                                    </div>
+                                </div>
+                                <ol class="widget-49-meeting-points">
+                                    <li class="widget-49-meeting-item"><span>Estos son </span></li>
+                                    <li class="widget-49-meeting-item"><span>Los pasos</span></li>
+                                    <li class="widget-49-meeting-item"><span>Que debes</span></li>
+                                    <li class="widget-49-meeting-item"><span>Seguir</span></li>
+                                </ol>
+                                <div class="widget-49-meeting-action">
+                                    <a href="#" class="btn btn-sm btn-outline-warning descargar" id="generar-noEncontrados">Descargar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="descarga" class="col-12 g-2">
 
             </div>
 
         </div>
+
+
 
     </div>
     </div>

@@ -1,9 +1,14 @@
 console.log('GECamacho');
 
 
-let listaProductos = [];
-let original_productos = [];
-let actualizar = [];
+let listaProductos = [],
+    original_productos = [],
+    actualizar = [],
+    homologados = [],
+    family = [],
+    repuestos = [],
+    noEncontrados = [],
+    proveedor = [];
 let empresas = ['Nelson Damián Camacho Suarez', 'Mundo Cross LTDA', 'MWO S.A.S', 'Mundo Cross Bogotá S.A.S', 'Moto World Oriente S.A.S.']
 
 const item = document.getElementById('items');
@@ -17,10 +22,8 @@ let tablaProducto = document.getElementById('div-table');
 let selector2 = document.getElementById('selectors2');
 let company = document.getElementById('company');
 
-var es_moto = false;
-var doc_proveedor = false;
-var repuestos = [];
-var proveedor = [];
+var es_moto = false,
+    doc_proveedor = false;
 
 
 item.addEventListener('click', e => { borrarFila(e) })
@@ -211,14 +214,18 @@ function procesar_moto(motos) {
 
 function procesar_repuestos(reptos) {
     repuestos = reptos;
-    document.getElementById('upload').style.display = 'none';
     document.getElementById('upload-proveedor').style.display = 'inline-block';
-    console.log(repuestos);
+    document.getElementById('upload').style.display = 'none';
+    // console.log(repuestos);
 }
 
 function procesar_proveedor(archivoProveedor) {
-    proveedor = [];
-    console.log(archivoProveedor);
+    document.getElementById('upload-proveedor').style.display = 'none';
+    document.getElementById('cargando').style.display = 'flex';
+    selectors2.style.display = 'flex';
+    document.getElementById('confirmarTodo').style.display = 'none';
+    cargar_empresas();
+
     archivoProveedor.forEach(element => {
         element['HOMOLOGACIONES'] = [];
         element['PARTE No.'] = element['PARTE No.'].replace(' ', '');
@@ -228,67 +235,83 @@ function procesar_proveedor(archivoProveedor) {
             proveedor[proveedor.length - 1]['HOMOLOGACIONES'].push(element['PARTE No.'].replace('*', '').trim());
         }
     });
+    // console.log(proveedor);
+    let i = 0;
 
-    console.log(proveedor);
-
-    let i = 0,
-        update = [];
-    let hay = {};
-
+    // Recorremos la lista de los repuestos del almacén y la comparamos con los repuestos de family,
+    //  haciendo una búsqueda secuencial, dado qeu es una lista desordenada.
     repuestos.forEach(element => {
+        let obj = {}
 
-        buscarElemento(proveedor, element['default_code']);
+        let hay = buscarElemento(proveedor, element['default_code']);
 
-        // proveedor.forEach(producto => {
-        //         if (element['default_code'] === producto['PARTE No.']) {
-        //             console.log(i, 'shiii', element['default_code'], '<<<>>>', producto['PARTE No.']);
-        //             i++;
-        //         } else if (producto['HOMOLOGACIONES'].includes(element['default_code'])) {
-        //             console.log(i, 'shiii', element['default_code'], '<<<>>>', producto['HOMOLOGACIONES']);
-        //             i++;
-        //         }
-        //     })
+        if (hay == -1) {
+            noEncontrados.push(element)
+        } else if (element['default_code'] === proveedor[hay]['PARTE No.']) {
+            obj['id'] = element['id']
+            obj['default_code'] = element['default_code']
+                // obj['refFamily'] = proveedor[hay]['PARTE No.']
+                // obj['name'] = element['name']
+                // obj['nombreFamily'] = proveedor[hay]['DESCRIPCIÓN']
+            obj['precio'] = proveedor[hay]['PRECIO SUGERIDO AL PÚBLICO INCLUIDO IMPUESTOS']
+            family.push(obj)
+        } else if (proveedor[hay]['HOMOLOGACIONES'].includes(element['default_code'])) {
+            obj['id'] = element['id']
+            obj['default_code'] = element['default_code']
+            obj['refFamily'] = proveedor[hay]['PARTE No.']
+            obj['name'] = element['name']
+            obj['nombreFamily'] = proveedor[hay]['DESCRIPCIÓN']
+            obj['precio'] = proveedor[hay]['PRECIO SUGERIDO AL PÚBLICO INCLUIDO IMPUESTOS']
+            obj['homologado'] = proveedor[hay]['HOMOLOGACIONES']
+            homologados.push(obj)
+        }
+
         i++;
     });
 
-    document.getElementById('upload-proveedor').style.display = 'none';
+    document.getElementById('cant-finded').innerHTML = family.length;
+    document.getElementById('cant-homolo').innerHTML = homologados.length;
+    document.getElementById('cant-no-finded').innerHTML = noEncontrados.length;
+    let cards = document.getElementsByClassName('widget-49-meeting-time')
+    for (let a = 0; a < cards.length; a++) {
+        const element = cards[a];
+        element.innerHTML = 'de ' + proveedor.length;
+    }
+
+    let bts = document.getElementsByClassName('descargar')
+    for (let a = 0; a < bts.length; a++) {
+        const element = bts[a];
+        element.style.display = 'inline-block';
+    }
 }
 
-// function buscarElemento(arreglo, texto) {
-//     let menor = 0;
-//     let mayor = arreglo.length - 1;
-//     while (menor <= mayor) {
-//         let mitad = menor + Math.floor((mayor - menor) / 2);
+function cargar_empresas() {
+    let options = '';
+    for (var j = 0; j < empresas.length; j++) {
+        options += '<option value="' + empresas[j] + '" />';
+    };
+    company.innerHTML = options;
+}
 
-//         let res = texto.localeCompare(arreglo[mitad]['PARTE No.']);
-
-//         // Check if x is present at mid
-//         if (res == 0)
-//             return mitad;
-
-//         // If x greater, ignore left half
-//         if (res > 0)
-//             menor = mitad + 1;
-
-//         // If x is smaller, ignore right half
-//         else
-//             mayor = mitad - 1;
-//     }
-
-//     return -1;
-// }
-
+//Búsqueda secuencial en el arreglo de productos del proveedor
 function buscarElemento(arreglo, texto) {
-    arreglo.forEach(producto => {
-        if (texto === producto['PARTE No.']) {
-            console.log(producto);
-        } else if (producto['HOMOLOGACIONES'].includes(texto)) {
-            console.log(producto);
+    let found = false;
+    let position = -1;
+    let index = 0;
+
+    while (!found && index < arreglo.length) {
+        if (arreglo[index]['PARTE No.'] == texto) {
+            found = true;
+            position = index;
+        } else if (arreglo[index]['HOMOLOGACIONES'].includes(texto)) {
+            found = true;
+            position = index;
+        } else {
+            index += 1;
         }
-    })
+    }
+    return position;
 }
-
-
 
 // Verificar si se ingresa un archivo con la extensión apropiada.
 function documento_valido(name) {
@@ -444,7 +467,7 @@ function obtener_datos(productos) {
             });
             if (esCorrecto == true) { // Se utiliza la bandera para agregar el producto a la lista
                 if (!listaProductos.find(o => o.referencia === obj.referencia && o === obj.modelo)) {
-                    console.log(o);
+                    // console.log(o);
                     agregarProducto(obj);
                 } else {
                     alert('¡El producto fue ingresado en la lista!')
@@ -516,6 +539,67 @@ $(document).on('click', 'button#confirmar', function(e) {
         alert('¡No hay elementos agregados a la lista!')
     }
 });
+
+$(document).on('click', 'a#generar-encontrados', function(e) {
+    let company = document.getElementById('input-company').value;
+    let inicio = document.getElementById('start-date').value;
+    let fin = document.getElementById('end-date').value;
+    id = '', precio = '';
+
+    let i = 0;
+    actualizar.splice(0)
+    if (company && inicio && fin) {
+        if (empresas.indexOf(company) !== -1 && comparaFecha(inicio, fin)) {
+            if (window.confirm("Revise muy bien las fechas!")) {
+                let fila = 1;
+                family.forEach(elemento => {
+                    newProducto = {}
+
+                    if (fila == 1) {
+                        newProducto['company'] = company;
+                        newProducto['Lista de precios'] = getNombreLista(inicio);
+                        newProducto['Política de descuento'] = 'Descuento incluido en el precio';
+                        newProducto['item_ids/applied_on'] = 'Variantes de producto';
+                        newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = elemento['id'];
+                        newProducto['item_ids/min_quantity'] = 1;
+                        newProducto['item_ids/date_start'] = inicio;
+                        newProducto['item_ids/date_end'] = fin;
+                        newProducto['item_ids/compute_price'] = 'Fixed Price';
+                        newProducto['item_ids/fixed_price'] = parseInt(elemento['precio'].replace(',', ''));
+                        actualizar.push(newProducto);
+
+                    } else {
+                        // delete newProducto['id'];
+                        newProducto['company'] = '';
+                        newProducto['Lista de precios'] = '';
+                        newProducto['Política de descuento'] = '';
+                        newProducto['item_ids/applied_on'] = 'Variantes de producto';
+                        newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = elemento['id'];
+                        newProducto['item_ids/min_quantity'] = 1;
+                        newProducto['item_ids/date_start'] = inicio;
+                        newProducto['item_ids/date_end'] = fin;
+                        newProducto['item_ids/compute_price'] = 'Fixed Price';
+                        newProducto['item_ids/fixed_price'] = parseInt(elemento['precio'].replace(',', ''));
+                        actualizar.push(newProducto);
+                    }
+                    fila++;
+                });
+
+                csvData = objectToCsv(actualizar);
+                actualizar = Object.assign({}, actualizar);
+                download(csvData);
+            }
+
+        } else {
+            alert('¡Datos incorrectos!')
+        }
+
+    } else {
+        alert('¡Completa todos los campos!')
+    }
+
+});
+
 
 $(document).on('click', 'a#confirmarTodo', function(e) {
     let company = document.getElementById('input-company').value;

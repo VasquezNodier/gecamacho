@@ -1,6 +1,6 @@
 console.log('GECamacho');
 
-
+let selectFile;
 let listaProductos = [],
     original_productos = [],
     actualizar = [],
@@ -51,10 +51,21 @@ document.getElementById('btnUpload').onclick = () => {
 };
 
 //Aquí se carga el documento y la información.
-document.getElementById('btnUploadVendorFile').onclick = () => {
+document.getElementById('UploadVendorFile').addEventListener("change", (event) => {
+    selectFile = event.target.files[0];
+});
+
+//Aquí se carga el documento y la información.
+document.getElementById('btnUploadVendorFile').addEventListener("click", () => {
     doc_proveedor = true;
-    upload_doc_vendor();
-};
+
+    if (selectFile) {
+        upload_doc_vendor();
+    } else {
+        alert('¡Por favor cargue el archivo!');
+        refreshPage();
+    }
+});
 
 function upload_doc() {
     // Se valida si el se pulsa el botón "Cargar" sin un archivo y si el archivo no contiene el formato ".CSV"
@@ -97,18 +108,14 @@ function upload_doc() {
     }
 };
 
-
 function upload_doc_vendor() {
-    // Se valida si el se pulsa el botón "Cargar" sin un archivo y si el archivo no contiene el formato ".CSV"
-    if ($('#UploadVendorFile').get(0).files.length == 0) {
-        alert('¡Por favor cargue el archivo!');
-        refreshPage();
-    }
 
-    let fileUpload = $('#UploadVendorFile').get(0);
-    let files = fileUpload.files;
+    // let fileUpload = $('#UploadVendorFile').get(0);
+    // let files = fileUpload.files;
     let reader = new FileReader();
-    let extension = documento_valido(files[0].name);
+    reader.readAsBinaryString(selectFile);
+    let extension = documento_valido(selectFile.name);
+
 
     if (extension === 'otro') {
         alert("Por favor solo cargue archivos .XLS o .XLSX");
@@ -116,27 +123,64 @@ function upload_doc_vendor() {
     } else {
         reader.onload = function(e) {
 
-            if (extension === 'csv') {
-                doc_text = e.target.result.split("\n"); // Dividimos texto del documento por salto de línea.
-                convert_csv_to_array(doc_text);
-            } else {
-                var data = "";
-                var bytes = new Uint8Array(e.target.result);
-                for (var i = 0; i < bytes.byteLength; i++) {
-                    data += String.fromCharCode(bytes[i]);
-                }
-                process_Excel_Vendor(data);
-            }
+            var data = "";
+            var bytes = e.target.result;
+            // for (var i = 0; i < bytes.byteLength; i++) {
+            //     data += String.fromCharCode(bytes[i]);
+            // }
+            process_Excel_Vendor(bytes);
+
         }
 
-        if (extension === 'csv') {
-            reader.readAsText($("#UploadVendorFile")[0].files[0]);
-        } else {
-            reader.readAsArrayBuffer($("#UploadVendorFile")[0].files[0]);
-        }
+        // if (extension === 'csv') {
+        //     reader.readAsText($("#UploadVendorFile")[0].files[0]);
+        // } else {
+        //     reader.readAsArrayBuffer($("#UploadVendorFile")[0].files[0]);
+        // }
     }
     $('input[type="file"]').val('');
 };
+
+
+// function upload_doc_vendor() {
+//     // Se valida si el se pulsa el botón "Cargar" sin un archivo y si el archivo no contiene el formato ".CSV"
+//     if ($('#UploadVendorFile').get(0).files.length == 0) {
+//         alert('¡Por favor cargue el archivo!');
+//         refreshPage();
+//     }
+
+//     let fileUpload = $('#UploadVendorFile').get(0);
+//     let files = fileUpload.files;
+//     let reader = new FileReader();
+//     let extension = documento_valido(files[0].name);
+
+//     if (extension === 'otro') {
+//         alert("Por favor solo cargue archivos .XLS o .XLSX");
+//         refreshPage();
+//     } else {
+//         reader.onload = function(e) {
+
+//             if (extension === 'csv') {
+//                 doc_text = e.target.result.split("\n"); // Dividimos texto del documento por salto de línea.
+//                 convert_csv_to_array(doc_text);
+//             } else {
+//                 var data = "";
+//                 var bytes = new Uint8Array(e.target.result);
+//                 for (var i = 0; i < bytes.byteLength; i++) {
+//                     data += String.fromCharCode(bytes[i]);
+//                 }
+//                 process_Excel_Vendor(data);
+//             }
+//         }
+
+//         if (extension === 'csv') {
+//             reader.readAsText($("#UploadVendorFile")[0].files[0]);
+//         } else {
+//             reader.readAsArrayBuffer($("#UploadVendorFile")[0].files[0]);
+//         }
+//     }
+//     $('input[type="file"]').val('');
+// };
 
 function process_Excel(data) {
     //Read the Excel File data.
@@ -158,17 +202,23 @@ function process_Excel(data) {
 
 };
 
+
 function process_Excel_Vendor(data) {
     //Read the Excel File data.
     var workbook = XLSX.read(data, {
         type: 'binary'
     });
 
+    let excelRows;
     //Fetch the name of First Sheet.
-    var firstSheet = workbook.SheetNames[0];
+    workbook.SheetNames.forEach(sheet => {
+        excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet]);
+
+    })
+
 
     //Read all rows from First Sheet into an JSON array.
-    var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+    // var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
 
     if (doc_proveedor === true) {
         procesar_proveedor(excelRows);
@@ -221,7 +271,7 @@ function procesar_repuestos(reptos) {
 
 function procesar_proveedor(archivoProveedor) {
     document.getElementById('upload-proveedor').style.display = 'none';
-    document.getElementById('cargando').style.display = 'flex';
+    document.getElementById('progressBar').style.display = 'flex';
     selectors2.style.display = 'flex';
     document.getElementById('confirmarTodo').style.display = 'none';
     cargar_empresas();
@@ -265,7 +315,6 @@ function procesar_proveedor(archivoProveedor) {
             obj['homologado'] = proveedor[hay]['HOMOLOGACIONES']
             homologados.push(obj)
         }
-
         i++;
     });
 
@@ -413,7 +462,7 @@ function filtrar_items(params) {
 
 }
 
-// Se consultan los datos que hay en el arreglo inicial de productos y se 
+// Se consultan los datos que hay en el arreglo inicial de productos y se
 // guardan para crear una tabla en base a sus valores
 function validar_seleccion(productos) {
     original_productos = productos.slice();
@@ -446,7 +495,7 @@ function validar_seleccion(productos) {
     document.getElementById('return-page').addEventListener('click', () => refreshPage());
 }
 
-// Se consultan los datos que hay en el arreglo inicial de productos y se 
+// Se consultan los datos que hay en el arreglo inicial de productos y se
 // guardan para crear una tabla en base a sus valores
 function obtener_datos(productos) {
     let headers = ['id', 'referencia', 'nombre', 'color', 'modelo']

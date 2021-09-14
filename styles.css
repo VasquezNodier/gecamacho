@@ -433,6 +433,11 @@ footer {
     display: none;
 }
 
+#progressBar {
+    margin-top: 10px;
+    display: none;
+}
+
 @media only screen and (max-width: 400px) {
     .opcion {
         position: relative;

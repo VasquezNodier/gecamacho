@@ -53,7 +53,7 @@
 
             <div id="upload">
                 <p id="text-ini">Adjunta el documento que descargaste desde ODOO.</p>
-                <form action="/" enctype=multipart/form-data method="post">
+                <form id="form" action="/" enctype=multipart/form-data method="post">
                     <div class="input-group">
                         <input type="file" class="form-control" accept=".xlsx" id="fileToUpload">
                         <a class="btn btn-outline-secondary" id="btnUpload">
@@ -72,13 +72,13 @@
                         <a class="btn btn-outline-secondary" id="btnUploadVendorFile">
                             Cargar
                         </a>
+                    </div>
 
+                    <div class="progress" id="progressBar">
+                        <div class="bar">0%</div>
                     </div>
                 </form>
-            </div>
 
-            <div class="spinner-border" id="cargando" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
             </div>
 
             <form class="row g-2" id="selectors">

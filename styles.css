@@ -21,19 +21,20 @@ h5 {
     /* background-color: coral; */
 }
 
-.container {
+
+/* .container {
     background-color: bisque;
-}
+} */
 
 #odoo {
-    display: inline-block;
+    display: none;
     margin-top: 10px;
     margin-bottom: 10px;
     width: 100%;
 }
 
 #vendor {
-    /* display: none; */
+    display: none;
     margin-top: 10px;
     margin-bottom: 10px;
     width: 100%;
@@ -43,34 +44,20 @@ h5 {
     border: 1px solid #121212;
 }
 
-
-/* .form-control {
-    width: 40%;
-} */
-
-#groupRefsModels {
-    /* display: none; */
-}
-
-#groupCompanyDates {
-    /* display: none; */
+#btnType {
+    display: none;
 }
 
 label {}
 
-#div-table {
-    margin-top: 20px;
-    /* display: none; */
+#groupRefsModels {
+    display: none;
+    ;
 }
 
-
-/* .fecha {
-    display: inline-block;
-    margin: 20px 0 20px 0px;
-} */
-
-.row {
-    margin: 10px auto;
+#div-table {
+    margin-top: 20px;
+    display: none;
 }
 
 .col {
@@ -131,8 +118,9 @@ footer {
     margin: auto;
 }
 
-#cards-info {
-    /* display: none; */
+#cards-info,
+#confirmarTodo {
+    display: none;
 }
 
 .card-margin {

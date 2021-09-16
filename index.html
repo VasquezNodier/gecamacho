@@ -33,26 +33,56 @@
         <h5 id="titulo">Grupo Empresarial Camacho</h5>
     </header>
 
-    <div id="seleccion" class="row container">
-        <div class="col">
-            <button value="motos" id="motos" class="opcion shadow">
-                <img src="./images/motorbike.svg" alt="motorbike" class="row__col-moto">
-                <b>Motocicletas</b>
-            </button>
-        </div>
-        <div class="col">
-            <button id="repuestos" value="repuestos" class="opcion shadow">
-                <img src="./images/car-parts.svg" alt="repuestos" class="row__col-repuestos">
-                <b>Repuestos</b>
-            </button>
-        </div>
-    </div>
+    <div class="container">
+        <form class="row g-2" id="selectors2">
+            <h6 id="tx-desc">1. Selecciona la empresa, la fecha de inicio y la fecha fin, para la lista:</h6>
 
-    <div>
-        <div id="content-div" class="container">
+            <div class="col-md-4">
+                <label for="input-company" class="form-label"><strong>Listado de Compañías:</strong></label>
+                <input id="input-company" name="company" class="form-control" type="text" list="company" placeholder="Seleccione la companía">
+                <datalist id="company"></datalist>
+            </div>
+
+            <div class="col-md-4">
+                <div class="fecha">
+                    <label for="start-date" class="form-label"><strong>Fecha de inicio:</strong></label>
+                    <input class="form-control" name="start-date" type="date" id="start-date">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="fecha">
+                    <label for="end-date" class="form-label"><strong>Fecha fin:</strong></label>
+                    <input class="form-control" name="end-date" type="date" id="end-date">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col g-2">
+                    <a id="continuar" class="btn btn-primary">Continuar</a>
+                </div>
+                <div class="col g-2">
+                    <a id="confirmarTodo" class="btn btn-success">Generar Documento</a>
+                </div>
+            </div>
+        </form>
+
+        <div id="content-div">
+            <div id="seleccion" class="row container">
+                <div class="col">
+                    <button value="motos" id="motos" class="opcion shadow">
+                        <img src="./images/motorbike.svg" alt="motorbike" class="row__col-moto">
+                        <b>Motocicletas</b>
+                    </button>
+                </div>
+                <div class="col">
+                    <button id="repuestos" value="repuestos" class="opcion shadow">
+                        <img src="./images/car-parts.svg" alt="repuestos" class="row__col-repuestos">
+                        <b>Repuestos</b>
+                    </button>
+                </div>
+            </div>
 
             <div id="upload">
-                <p id="text-ini">Adjunta el documento que descargaste desde ODOO.</p>
+                <h6 id="text-ini">3. Adjunta el documento que descargaste desde ODOO.</h6>
                 <form id="form" action="/" enctype=multipart/form-data method="post">
                     <div class="input-group">
                         <input type="file" class="form-control" accept=".xlsx" id="fileToUpload">
@@ -65,7 +95,7 @@
             </div>
 
             <div id="upload-proveedor">
-                <p id="text-ini">Adjunta el archivo excel del proveedor.</p>
+                <h6 id="text-ini">4. Adjunta el archivo excel del proveedor.</h6>
                 <form action="/" enctype=multipart/form-data method="post">
                     <div class="input-group">
                         <input type="file" class="form-control" accept=".xlsx" id="UploadVendorFile">
@@ -82,26 +112,22 @@
             </div>
 
             <form class="row g-2" id="selectors">
-                <h6 id="tx-desc">Selecciona los vehículos que quieres actualizar.</h6>
+                <h6 id="tx-desc">4. Selecciona los vehículos que quieres actualizar.</h6>
 
                 <div class="col-md-4">
-                    <label for="input-refs" class="form-label"><b>Referencias:</b></label>
+                    <label for="input-refs" class="form-label"><strong>Lista de Referencias:</strong></label>
                     <input id="input-refs" name="referencia" class="form-control" type="text" list="referencias" placeholder="Seleccione la referencia">
                     <datalist id="referencias"></datalist>
                 </div>
 
                 <div class="col-md-4">
-                    <label for="input-mod" class="form-label"><b>Modelos:</b></label>
+                    <label for="input-mod" class="form-label"><strong>Lista de Modelos:</strong></label>
                     <input id="input-mod" name="modelo" class="form-control" type="text" list="modelos" placeholder="Seleccione el modelo">
                     <datalist id="modelos"></datalist>
                 </div>
 
-                <!-- <div class="col-md-4">
-                    <label for="precio" class="form-label"><b>Precio</b></label>
-                    <input id="precio" name="precio" class="form-control" type="number" placeholder="$ 1000000">
-                </div> -->
                 <div class="col-md-4">
-                    <label for="precio" class="form-label"><b>Precio</b></label>
+                    <label for="precio" class="form-label"><strong>Precio</strong></label>
                     <div class="input-group mb-3">
                         <span class="input-group-text">$</span>
                         <input type="number" id="precio" name="precio" class="form-control" aria-label="Amount (to the nearest dollar)">
@@ -115,10 +141,6 @@
                         <a id="return-page" class="btn btn-danger">Volver a cargar</a>
                     </div>
                 </div>
-
-                <!-- <div class="alert alert-danger" role="alert">
-                    El producto ya fue agregado antes!
-                </div> -->
 
             </form>
 
@@ -148,40 +170,8 @@
                         </tr>
                     </tfoot>
                 </table>
-                <!-- <h4>Cards</h4>
-                <div class="row" id="cards"></div> -->
             </div>
 
-            <form class="row g-2" id="selectors2">
-                <h6 id="tx-desc">Selecciona las fechas y la empresa</h6>
-
-                <div class="col-md-4">
-                    <label for="input-company" class="form-label"><b>Compañía:</b></label>
-                    <input id="input-company" name="company" class="form-control" type="text" list="company" placeholder="Seleccione la companía">
-                    <datalist id="company"></datalist>
-                </div>
-                <div class="col-md-4">
-                    <div class="fecha">
-                        <label for="start-date" class="form-label"><b>Fecha de inicio:</b></label>
-                        <input class="form-control" name="start-date" type="date" id="start-date">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="fecha">
-                        <label for="end-date" class="form-label"><b>Fecha fin:</b></label>
-                        <input class="form-control" name="end-date" type="date" id="end-date">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12 g-2">
-                        <a id="confirmarTodo" class="btn btn-success">Generar Documento</a>
-                    </div>
-                </div>
-
-
-
-            </form>
 
             <div class="row" id="cards-info">
                 <div class="col-lg-4">
@@ -278,9 +268,6 @@
             </div>
 
         </div>
-
-
-
     </div>
     </div>
 
@@ -313,8 +300,6 @@
             El producto fue ingresado en la lista!
         </div>
     </template>
-
-
 
     <!--JQUERY-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>

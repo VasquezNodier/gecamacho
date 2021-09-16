@@ -17,9 +17,9 @@ const fragment = document.createDocumentFragment();
 
 var lista_referencias = document.getElementById('referencias');
 var lista_modelos = document.getElementById('modelos');
-let selector = document.getElementById('selectors');
+let grSelect1 = document.getElementById('groupRefsModels');
 let tablaProducto = document.getElementById('div-table');
-let selector2 = document.getElementById('selectors2');
+let grSelect2 = document.getElementById('groupCompanyDates');
 let company = document.getElementById('company');
 
 var es_moto = false,
@@ -28,13 +28,13 @@ var es_moto = false,
 
 item.addEventListener('click', e => { borrarFila(e) })
 
-document.getElementById('motos').onclick = () => {
+document.getElementById('btnType-moto').onclick = () => {
     document.getElementById('titulo').innerHTML = 'Actualización de precios de Motocicletas';
     change_visual();
     es_moto = true
 }
 
-document.getElementById('repuestos').onclick = () => {
+document.getElementById('btnType-repuestos').onclick = () => {
         document.getElementById('titulo').innerHTML = 'Actualización de precios de Repuestos';
         change_visual();
         es_moto = false
@@ -46,17 +46,17 @@ function change_visual() {
 }
 
 //Aquí se carga el documento y la información.
-document.getElementById('btnUpload').onclick = () => {
+document.getElementById('odoo-btnUpload').onclick = () => {
     upload_doc();
 };
 
 //Aquí se carga el documento y la información.
-document.getElementById('UploadVendorFile').addEventListener("change", (event) => {
+document.getElementById('vendor-fileInput').addEventListener("change", (event) => {
     selectFile = event.target.files[0];
 });
 
 //Aquí se carga el documento y la información.
-document.getElementById('btnUploadVendorFile').addEventListener("click", () => {
+document.getElementById('vendor-btnUpload').addEventListener("click", () => {
     doc_proveedor = true;
 
     if (selectFile) {
@@ -69,12 +69,12 @@ document.getElementById('btnUploadVendorFile').addEventListener("click", () => {
 
 function upload_doc() {
     // Se valida si el se pulsa el botón "Cargar" sin un archivo y si el archivo no contiene el formato ".CSV"
-    if ($('#fileToUpload').get(0).files.length == 0) {
+    if ($('#odoo-fileInput').get(0).files.length == 0) {
         alert('¡Por favor cargue el archivo!');
         refreshPage();
     } else {
 
-        let fileUpload = $('#fileToUpload').get(0);
+        let fileUpload = $('#odoo-fileInput').get(0);
         let files = fileUpload.files;
         let reader = new FileReader();
         let extension = documento_valido(files[0].name);
@@ -99,9 +99,9 @@ function upload_doc() {
             }
 
             if (extension === 'csv') {
-                reader.readAsText($("#fileToUpload")[0].files[0]);
+                reader.readAsText($("#odoo-fileInput")[0].files[0]);
             } else {
-                reader.readAsArrayBuffer($("#fileToUpload")[0].files[0]);
+                reader.readAsArrayBuffer($("#odoo-fileInput")[0].files[0]);
             }
         }
         $('input[type="file"]').val('');
@@ -110,7 +110,7 @@ function upload_doc() {
 
 function upload_doc_vendor() {
 
-    // let fileUpload = $('#UploadVendorFile').get(0);
+    // let fileUpload = $('#vendor-fileInput').get(0);
     // let files = fileUpload.files;
     let reader = new FileReader();
     reader.readAsBinaryString(selectFile);
@@ -133,9 +133,9 @@ function upload_doc_vendor() {
         }
 
         // if (extension === 'csv') {
-        //     reader.readAsText($("#UploadVendorFile")[0].files[0]);
+        //     reader.readAsText($("#vendor-fileInput")[0].files[0]);
         // } else {
-        //     reader.readAsArrayBuffer($("#UploadVendorFile")[0].files[0]);
+        //     reader.readAsArrayBuffer($("#vendor-fileInput")[0].files[0]);
         // }
     }
     $('input[type="file"]').val('');
@@ -144,12 +144,12 @@ function upload_doc_vendor() {
 
 // function upload_doc_vendor() {
 //     // Se valida si el se pulsa el botón "Cargar" sin un archivo y si el archivo no contiene el formato ".CSV"
-//     if ($('#UploadVendorFile').get(0).files.length == 0) {
+//     if ($('#vendor-fileInput').get(0).files.length == 0) {
 //         alert('¡Por favor cargue el archivo!');
 //         refreshPage();
 //     }
 
-//     let fileUpload = $('#UploadVendorFile').get(0);
+//     let fileUpload = $('#vendor-fileInput').get(0);
 //     let files = fileUpload.files;
 //     let reader = new FileReader();
 //     let extension = documento_valido(files[0].name);
@@ -174,9 +174,9 @@ function upload_doc_vendor() {
 //         }
 
 //         if (extension === 'csv') {
-//             reader.readAsText($("#UploadVendorFile")[0].files[0]);
+//             reader.readAsText($("#vendor-fileInput")[0].files[0]);
 //         } else {
-//             reader.readAsArrayBuffer($("#UploadVendorFile")[0].files[0]);
+//             reader.readAsArrayBuffer($("#vendor-fileInput")[0].files[0]);
 //         }
 //     }
 //     $('input[type="file"]').val('');
@@ -264,15 +264,15 @@ function procesar_moto(motos) {
 
 function procesar_repuestos(reptos) {
     repuestos = reptos;
-    document.getElementById('upload-proveedor').style.display = 'inline-block';
-    document.getElementById('upload').style.display = 'none';
+    document.getElementById('vendor').style.display = 'inline-block';
+    document.getElementById('odoo').style.display = 'none';
     // console.log(repuestos);
 }
 
 function procesar_proveedor(archivoProveedor) {
-    document.getElementById('upload-proveedor').style.display = 'none';
+    document.getElementById('vendor').style.display = 'none';
     document.getElementById('progressBar').style.display = 'flex';
-    selectors2.style.display = 'flex';
+    grSelect2.style.display = 'flex';
     document.getElementById('confirmarTodo').style.display = 'none';
     cargar_empresas();
 
@@ -436,8 +436,8 @@ function genera_selectores(modelos, referencias) {
     referencias = filtrar_items(referencias).sort();
     modelos = filtrar_items(modelos).sort();
 
-    selector.style.display = 'flex';
-    selector.setAttribute('class', 'row g-2');
+    grSelect1.style.display = 'flex';
+    grSelect1.setAttribute('class', 'row g-2');
 
     var options = '';
     for (var i = 0; i < referencias.length; i++) {
@@ -450,7 +450,7 @@ function genera_selectores(modelos, referencias) {
         options += '<option value="' + modelos[i] + '" />';
     };
     lista_modelos.innerHTML = options;
-    document.getElementById('upload').style.display = 'none';
+    document.getElementById('odoo').style.display = 'none';
 }
 
 // Se filtra la lista de referencias y modelos para quitar los repetidos.
@@ -468,7 +468,7 @@ function validar_seleccion(productos) {
     original_productos = productos.slice();
     document.getElementById('agregar-info').addEventListener('click', e => {
 
-        let obj = Array.from(document.querySelectorAll('#selectors input')).reduce((acc, input) => ({...acc, [input.name]: input.value }), {});
+        let obj = Array.from(document.querySelectorAll('#groupRefsModels input')).reduce((acc, input) => ({...acc, [input.name]: input.value }), {});
 
         if (obj.referencia && obj.modelo && obj.precio) {
             let esCorrecto = false;
@@ -503,7 +503,7 @@ function obtener_datos(productos) {
     original_productos = productos.slice();
     document.getElementById('agregar-info').addEventListener('click', e => {
 
-        let obj = Array.from(document.querySelectorAll('#selectors input')).reduce((acc, input) => ({...acc, [input.name]: input.value }), {});
+        let obj = Array.from(document.querySelectorAll('#groupRefsModels input')).reduce((acc, input) => ({...acc, [input.name]: input.value }), {});
 
         if (obj.referencia && obj.modelo && obj.precio) {
             let esCorrecto = false;
@@ -576,8 +576,8 @@ $(document).on('click', 'button#confirmar', function(e) {
     if (listaProductos.length !== 0) {
         if (window.confirm("Revise muy bien todas las referencias que desea actualizar")) {
             tablaProducto.style.display = 'none';
-            selectors.style.display = 'none';
-            selectors2.style.display = 'flex';
+            grSelect1.style.display = 'none';
+            grSelect2.style.display = 'flex';
             var options = '';
             for (var i = 0; i < empresas.length; i++) {
                 options += '<option value="' + empresas[i] + '" />';

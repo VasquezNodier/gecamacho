@@ -30,11 +30,11 @@
 
     <header>
         <h3 id="titulo">Actualización de listas precios</h3>
-        <h5 id="titulo">Grupo Empresarial Camacho</h5>
+        <h5>Grupo Empresarial Camacho</h5>
     </header>
 
     <div class="container">
-        <form class="row g-2" id="selectors2">
+        <form class="row g-2" id="groupCompanyDates">
             <h6 id="tx-desc">1. Selecciona la empresa, la fecha de inicio y la fecha fin, para la lista:</h6>
 
             <div class="col-md-4">
@@ -59,34 +59,32 @@
                 <div class="col g-2">
                     <a id="continuar" class="btn btn-primary">Continuar</a>
                 </div>
-                <div class="col g-2">
-                    <a id="confirmarTodo" class="btn btn-success">Generar Documento</a>
-                </div>
             </div>
         </form>
 
         <div id="content-div">
+
             <div id="seleccion" class="row container">
                 <div class="col">
-                    <button value="motos" id="motos" class="opcion shadow">
-                        <img src="./images/motorbike.svg" alt="motorbike" class="row__col-moto">
+                    <button value="motos" id="btnType-moto" class="opcion shadow">
+                        <img src="./images/motorbike.svg" alt="motorbike" class="img_moto">
                         <b>Motocicletas</b>
                     </button>
                 </div>
                 <div class="col">
-                    <button id="repuestos" value="repuestos" class="opcion shadow">
-                        <img src="./images/car-parts.svg" alt="repuestos" class="row__col-repuestos">
+                    <button id="btnType-repuestos" value="repuestos" class="opcion shadow">
+                        <img src="./images/car-parts.svg" alt="repuestos" class="img_repuestos">
                         <b>Repuestos</b>
                     </button>
                 </div>
             </div>
 
-            <div id="upload">
+            <div id="odoo">
                 <h6 id="text-ini">3. Adjunta el documento que descargaste desde ODOO.</h6>
                 <form id="form" action="/" enctype=multipart/form-data method="post">
                     <div class="input-group">
-                        <input type="file" class="form-control" accept=".xlsx" id="fileToUpload">
-                        <a class="btn btn-outline-secondary" id="btnUpload">
+                        <input type="file" class="form-control" accept=".xlsx" id="odoo-fileInput">
+                        <a class="btn btn-outline-secondary" id="odoo-btnUpload">
                             Cargar
                         </a>
 
@@ -94,12 +92,12 @@
                 </form>
             </div>
 
-            <div id="upload-proveedor">
+            <div id="vendor">
                 <h6 id="text-ini">4. Adjunta el archivo excel del proveedor.</h6>
                 <form action="/" enctype=multipart/form-data method="post">
                     <div class="input-group">
-                        <input type="file" class="form-control" accept=".xlsx" id="UploadVendorFile">
-                        <a class="btn btn-outline-secondary" id="btnUploadVendorFile">
+                        <input type="file" class="form-control" accept=".xlsx" id="vendor-fileInput">
+                        <a class="btn btn-outline-secondary" id="vendor-btnUpload">
                             Cargar
                         </a>
                     </div>
@@ -111,7 +109,7 @@
 
             </div>
 
-            <form class="row g-2" id="selectors">
+            <form class="row g-2" id="groupRefsModels">
                 <h6 id="tx-desc">4. Selecciona los vehículos que quieres actualizar.</h6>
 
                 <div class="col-md-4">
@@ -156,10 +154,9 @@
                         </tr>
                     </thead>
                     <tbody id="items"></tbody>
-                    <tfoot>
+                    <!-- <tfoot>
                         <tr id="footer">
-                            <th scope="row">Validar</th>
-                            <td>
+                            <td id="validar" colspan="4">
                                 <button class="btn btn-danger" id="vaciar-todo">
                                     Vaciar
                                 </button>
@@ -168,8 +165,13 @@
                                 </button>
                             </td>
                         </tr>
-                    </tfoot>
+                    </tfoot> -->
                 </table>
+                <div class="d-flex justify-content-around">
+                    <button class="btn btn-success" id="confirmar">Confirmar </button>
+
+                    <button class="btn btn-danger" id="vaciar-todo">Vaciar</button>
+                </div>
             </div>
 
 
@@ -263,6 +265,12 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col g-2">
+                    <a id="confirmarTodo" class="btn btn-success">Generar Documento</a>
+                </div>
+            </div>
+
             <div id="descarga" class="col-12 g-2">
 
             </div>
@@ -306,6 +314,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
     <!--JS-->
+    <script src="./view.js"></script>
     <script src="./index.js"></script>
 
     <!--Separate Popper and Bootstrap JS -->

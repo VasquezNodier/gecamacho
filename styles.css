@@ -18,16 +18,21 @@ h5 {
 
 #content-div {
     padding: 10px;
+    /* background-color: coral; */
 }
 
-#upload {
+.container {
+    background-color: bisque;
+}
+
+#odoo {
     display: inline-block;
     margin-top: 10px;
     margin-bottom: 10px;
     width: 100%;
 }
 
-#upload-proveedor {
+#vendor {
     /* display: none; */
     margin-top: 10px;
     margin-bottom: 10px;
@@ -43,11 +48,11 @@ h5 {
     width: 40%;
 } */
 
-#selectors {
+#groupRefsModels {
     /* display: none; */
 }
 
-#selectors2 {
+#groupCompanyDates {
     /* display: none; */
 }
 
@@ -73,8 +78,8 @@ label {}
     text-align: center;
 }
 
-.row__col-moto,
-.row__col-repuestos {
+.img_moto,
+.img_repuestos {
     height: 12rem;
 }
 
@@ -107,7 +112,7 @@ b {
 
 #content-div {
     /* display: none; */
-    margin-bottom: 30px;
+    margin-bottom: 50px;
 }
 
 html {
@@ -121,8 +126,13 @@ footer {
     width: 100%;
 }
 
+#validar {
+    text-align: center;
+    margin: auto;
+}
+
 #cards-info {
-    display: none;
+    /* display: none; */
 }
 
 .card-margin {

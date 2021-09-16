@@ -9,18 +9,16 @@ let listaProductos = [],
     repuestos = [],
     noEncontrados = [],
     proveedor = [];
-let empresas = ['Nelson Damián Camacho Suarez', 'Mundo Cross LTDA', 'MWO S.A.S', 'Mundo Cross Bogotá S.A.S', 'Moto World Oriente S.A.S.']
 
 const item = document.getElementById('items');
 const templateLista = document.getElementById('template-lista').content;
 const fragment = document.createDocumentFragment();
 
-var lista_referencias = document.getElementById('referencias');
-var lista_modelos = document.getElementById('modelos');
-let grSelect1 = document.getElementById('groupRefsModels');
-let tablaProducto = document.getElementById('div-table');
-let grSelect2 = document.getElementById('groupCompanyDates');
-let company = document.getElementById('company');
+
+// let grSelect1 = document.getElementById('groupRefsModels');
+// let tablaProducto = document.getElementById('div-table');
+// let grSelect2 = document.getElementById('groupCompanyDates');
+// let lstCompany = document.getElementById('company');
 
 var es_moto = false,
     doc_proveedor = false;
@@ -28,22 +26,8 @@ var es_moto = false,
 
 item.addEventListener('click', e => { borrarFila(e) })
 
-document.getElementById('btnType-moto').onclick = () => {
-    document.getElementById('titulo').innerHTML = 'Actualización de precios de Motocicletas';
-    change_visual();
-    es_moto = true
-}
 
-document.getElementById('btnType-repuestos').onclick = () => {
-        document.getElementById('titulo').innerHTML = 'Actualización de precios de Repuestos';
-        change_visual();
-        es_moto = false
-    }
-    //Change visual elements
-function change_visual() {
-    document.getElementById('seleccion').style.display = 'none';
-    document.getElementById('content-div').style.display = 'block';
-}
+
 
 //Aquí se carga el documento y la información.
 document.getElementById('odoo-btnUpload').onclick = () => {
@@ -271,10 +255,9 @@ function procesar_repuestos(reptos) {
 
 function procesar_proveedor(archivoProveedor) {
     document.getElementById('vendor').style.display = 'none';
-    document.getElementById('progressBar').style.display = 'flex';
-    grSelect2.style.display = 'flex';
+    document.getElementById('cards-info').style.display = 'flex';
+    // grSelect2.style.display = 'flex';
     document.getElementById('confirmarTodo').style.display = 'none';
-    cargar_empresas();
 
     archivoProveedor.forEach(element => {
         element['HOMOLOGACIONES'] = [];
@@ -334,13 +317,7 @@ function procesar_proveedor(archivoProveedor) {
     }
 }
 
-function cargar_empresas() {
-    let options = '';
-    for (var j = 0; j < empresas.length; j++) {
-        options += '<option value="' + empresas[j] + '" />';
-    };
-    company.innerHTML = options;
-}
+
 
 //Búsqueda secuencial en el arreglo de productos del proveedor
 function buscarElemento(arreglo, texto) {
@@ -574,166 +551,125 @@ $(document).on('click', 'button#confirmar', function(e) {
     newProducto = {}
     actualizar.splice(0)
     if (listaProductos.length !== 0) {
-        if (window.confirm("Revise muy bien todas las referencias que desea actualizar")) {
-            tablaProducto.style.display = 'none';
-            grSelect1.style.display = 'none';
-            grSelect2.style.display = 'flex';
-            var options = '';
-            for (var i = 0; i < empresas.length; i++) {
-                options += '<option value="' + empresas[i] + '" />';
-            };
-            company.innerHTML = options;
-        }
+        tablaProducto.style.display = 'none';
+        grSelect1.style.display = 'none';
+        btnDescargar.style.display = 'inline-block';
     } else {
         alert('¡No hay elementos agregados a la lista!')
     }
 });
 
 $(document).on('click', 'a#generar-encontrados', function(e) {
-    let company = document.getElementById('input-company').value;
-    let inicio = document.getElementById('start-date').value;
-    let fin = document.getElementById('end-date').value;
+
     id = '', precio = '';
 
     let i = 0;
     actualizar.splice(0)
-    if (company && inicio && fin) {
-        if (empresas.indexOf(company) !== -1 && comparaFecha(inicio, fin)) {
-            if (window.confirm("Revise muy bien las fechas!")) {
-                let fila = 1;
-                family.forEach(elemento => {
-                    newProducto = {}
+    if (window.confirm("Revise muy bien las fechas!")) {
+        let fila = 1;
+        family.forEach(elemento => {
+            newProducto = {}
 
-                    if (fila == 1) {
-                        newProducto['company'] = company;
-                        newProducto['Lista de precios'] = getNombreLista(inicio);
-                        newProducto['Política de descuento'] = 'Descuento incluido en el precio';
-                        newProducto['item_ids/applied_on'] = 'Variantes de producto';
-                        newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = elemento['id'];
-                        newProducto['item_ids/min_quantity'] = 1;
-                        newProducto['item_ids/date_start'] = inicio;
-                        newProducto['item_ids/date_end'] = fin;
-                        newProducto['item_ids/compute_price'] = 'Fixed Price';
-                        newProducto['item_ids/fixed_price'] = parseInt(elemento['precio'].replace(',', ''));
-                        actualizar.push(newProducto);
+            if (fila == 1) {
+                newProducto['company'] = company;
+                newProducto['Lista de precios'] = getNombreLista(inicio);
+                newProducto['Política de descuento'] = 'Descuento incluido en el precio';
+                newProducto['item_ids/applied_on'] = 'Variantes de producto';
+                newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = elemento['id'];
+                newProducto['item_ids/min_quantity'] = 1;
+                newProducto['item_ids/date_start'] = inicio;
+                newProducto['item_ids/date_end'] = fin;
+                newProducto['item_ids/compute_price'] = 'Fixed Price';
+                newProducto['item_ids/fixed_price'] = parseInt(elemento['precio'].replace(',', ''));
+                actualizar.push(newProducto);
 
-                    } else {
-                        // delete newProducto['id'];
-                        newProducto['company'] = '';
-                        newProducto['Lista de precios'] = '';
-                        newProducto['Política de descuento'] = '';
-                        newProducto['item_ids/applied_on'] = 'Variantes de producto';
-                        newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = elemento['id'];
-                        newProducto['item_ids/min_quantity'] = 1;
-                        newProducto['item_ids/date_start'] = inicio;
-                        newProducto['item_ids/date_end'] = fin;
-                        newProducto['item_ids/compute_price'] = 'Fixed Price';
-                        newProducto['item_ids/fixed_price'] = parseInt(elemento['precio'].replace(',', ''));
-                        actualizar.push(newProducto);
-                    }
-                    fila++;
-                });
-
-                csvData = objectToCsv(actualizar);
-                actualizar = Object.assign({}, actualizar);
-                download(csvData);
+            } else {
+                // delete newProducto['id'];
+                newProducto['company'] = '';
+                newProducto['Lista de precios'] = '';
+                newProducto['Política de descuento'] = '';
+                newProducto['item_ids/applied_on'] = 'Variantes de producto';
+                newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = elemento['id'];
+                newProducto['item_ids/min_quantity'] = 1;
+                newProducto['item_ids/date_start'] = inicio;
+                newProducto['item_ids/date_end'] = fin;
+                newProducto['item_ids/compute_price'] = 'Fixed Price';
+                newProducto['item_ids/fixed_price'] = parseInt(elemento['precio'].replace(',', ''));
+                actualizar.push(newProducto);
             }
+            fila++;
+        });
 
-        } else {
-            alert('¡Datos incorrectos!')
-        }
-
-    } else {
-        alert('¡Completa todos los campos!')
+        csvData = objectToCsv(actualizar);
+        actualizar = Object.assign({}, actualizar);
+        download(csvData);
     }
+
 
 });
 
 
 $(document).on('click', 'a#confirmarTodo', function(e) {
-    let company = document.getElementById('input-company').value;
-    let inicio = document.getElementById('start-date').value;
-    let fin = document.getElementById('end-date').value;
     newProducto = {}
     id = '';
     actualizar.splice(0)
-    if (company && inicio && fin) {
-        if (empresas.indexOf(company) !== -1) {
-            if (comparaFecha(inicio, fin)) {
+    if (listaProductos.length !== 0) {
 
-                if (listaProductos.length !== 0) {
-                    if (window.confirm("Revise muy bien las fechas!")) {
-                        let fila = 1;
-                        listaProductos.forEach(lista => {
-                            original_productos.forEach(original => {
-                                if (lista.referencia === original['Referencia Interna'] && lista.modelo === original['Atributos del Valor']) {
-                                    id = original['ID']
-                                    delete original['Atributos del Valor'];
-                                    delete original['Nombre'];
-                                    delete original['Referencia Interna'];
-                                    delete original['Es vehículo'];
-                                    delete original['Tipo de producto'];
-                                    newProducto = original;
-                                    if (fila == 1) {
-                                        delete newProducto['ID'];
-                                        newProducto['company'] = company;
-                                        newProducto['Lista de precios'] = getNombreLista(inicio);
-                                        newProducto['Política de descuento'] = 'Descuento incluido en el precio';
-                                        newProducto['item_ids/applied_on'] = 'Variantes de producto';
-                                        newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = id;
-                                        newProducto['item_ids/min_quantity'] = 1;
-                                        newProducto['item_ids/date_start'] = inicio;
-                                        newProducto['item_ids/date_end'] = fin;
-                                        newProducto['item_ids/compute_price'] = 'Fixed Price';
-                                        newProducto['item_ids/fixed_price'] = lista.precio;
-                                        actualizar.push(newProducto);
+        let fila = 1;
+        listaProductos.forEach(lista => {
+            original_productos.forEach(original => {
+                if (lista.referencia === original['Referencia Interna'] && lista.modelo === original['Atributos del Valor']) {
+                    id = original['ID']
+                    delete original['Atributos del Valor'];
+                    delete original['Nombre'];
+                    delete original['Referencia Interna'];
+                    delete original['Es vehículo'];
+                    delete original['Tipo de producto'];
+                    newProducto = original;
+                    if (fila == 1) {
+                        delete newProducto['ID'];
+                        newProducto['company'] = company;
+                        newProducto['Lista de precios'] = getNombreLista(inicio);
+                        newProducto['Política de descuento'] = 'Descuento incluido en el precio';
+                        newProducto['item_ids/applied_on'] = 'Variantes de producto';
+                        newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = id;
+                        newProducto['item_ids/min_quantity'] = 1;
+                        newProducto['item_ids/date_start'] = inicio;
+                        newProducto['item_ids/date_end'] = fin;
+                        newProducto['item_ids/compute_price'] = 'Fixed Price';
+                        newProducto['item_ids/fixed_price'] = lista.precio;
+                        actualizar.push(newProducto);
 
-                                    } else {
-                                        delete newProducto['ID'];
-                                        newProducto['company'] = '';
-                                        newProducto['Lista de precios'] = '';
-                                        newProducto['Política de descuento'] = '';
-                                        newProducto['item_ids/applied_on'] = 'Variantes de producto';
-                                        newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = id;
-                                        newProducto['item_ids/min_quantity'] = 1;
-                                        newProducto['item_ids/date_start'] = inicio;
-                                        newProducto['item_ids/date_end'] = fin;
-                                        newProducto['item_ids/compute_price'] = 'Fixed Price';
-                                        newProducto['item_ids/fixed_price'] = lista.precio;
-                                        actualizar.push(newProducto);
-                                    }
-                                    fila++;
-                                }
-                            });
-                        });
-                        csvData = objectToCsv(actualizar);
-                        actualizar = Object.assign({}, actualizar);
-                        download(csvData);
+                    } else {
+                        delete newProducto['ID'];
+                        newProducto['company'] = '';
+                        newProducto['Lista de precios'] = '';
+                        newProducto['Política de descuento'] = '';
+                        newProducto['item_ids/applied_on'] = 'Variantes de producto';
+                        newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = id;
+                        newProducto['item_ids/min_quantity'] = 1;
+                        newProducto['item_ids/date_start'] = inicio;
+                        newProducto['item_ids/date_end'] = fin;
+                        newProducto['item_ids/compute_price'] = 'Fixed Price';
+                        newProducto['item_ids/fixed_price'] = lista.precio;
+                        actualizar.push(newProducto);
                     }
-                } else {
-                    alert('¡No hay elementos agregados a la lista!')
+                    fila++;
                 }
-            } else {
-                alert('¡La fecha es incorrecta!');
-            }
-        } else {
-            alert('¡Empresa incorrecta!')
-        }
-    } else {
-        alert('¡Completa todos los campos!')
+            });
+        });
+        csvData = objectToCsv(actualizar);
+        actualizar = Object.assign({}, actualizar);
+        download(csvData);
+
+        alert('¡No hay elementos agregados a la lista!')
     }
+
+
 
 });
 
-function comparaFecha(fecha1, fecha2) {
-    fecha1 = new Date(fecha1);
-    fecha2 = new Date(fecha2);
-    if (fecha1 <= fecha2) {
-        return true;
-    } else {
-        return false;
-    }
-}
+
 
 function getNombreLista(inicio) {
     const segundos = Date.now();

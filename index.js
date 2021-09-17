@@ -604,6 +604,7 @@ $(document).on('click', 'a#generar-encontrados', function(e) {
         csvData = objectToCsv(actualizar);
         actualizar = Object.assign({}, actualizar);
         download(csvData);
+
     }
 
 
@@ -668,6 +669,13 @@ $(document).on('click', 'a#confirmarTodo', function(e) {
 
 
 
+    <<
+    << << < HEAD
+        ===
+        === = ===
+        ===
+        = >>>
+        >>> > c20606d7269e877f7b54922d7c6f43f7261b5258
 }
 
 
@@ -734,9 +742,14 @@ $(document).on('click', 'a#confirmarTodo', function(e) {
 
 
     >>>
-    >>>
-    >
-    7708 c5c6a73dfea16daee35b58663dd36e707139
+    <<
+    << << < HEAD
+        >>>
+        >
+        7708 c5c6a73dfea16daee35b58663dd36e707139 ===
+        === = >>>
+        > 7708 c5c6a73dfea16daee35b58663dd36e707139 >>>
+        >>> > c20606d7269e877f7b54922d7c6f43f7261b5258
 });
 
 

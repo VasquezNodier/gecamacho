@@ -53,20 +53,24 @@ function searchElement(arreglo, texto) {
     return position;
 }
 
-// Descargamos el documento con el nombre product.csv
-const download = function(data) {
-    const blob = new Blob(["\uFEFF" + data], { type: '"text/csv; charset=utf-8"' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('class', 'btn btn-success')
-    a.setAttribute('hidden', '');
-    a.setAttribute('href', url);
-    a.setAttribute('download', 'product.csv');
-    document.getElementById('descarga').appendChild(a);
-    a.click();
-    document.getElementById('descarga').removeChild(a);
-    refreshPage();
-};
+// Creamos el csv a partir de la lista final de productos para actualizar
+function objectToCsv(lista) {
+
+    const csvRows = [];
+    // Headers
+    const headers = Object.keys(lista[0]);
+    csvRows.push(headers.join(','));
+    // Ciclo en filas
+    for (const row of lista) {
+        const values = headers.map(header => {
+            // const escaped = row[header].replace(/"/g,'\\"')
+            return `${row[header]}`;
+        });
+        csvRows.push(values.join(','));
+    }
+    return csvRows.join('\n');
+    //CSV
+}
 
 const comparaFecha = (fecha1, fecha2) => {
     fecha1 = new Date(fecha1);
@@ -123,4 +127,28 @@ const validDocument = (name) => {
     } else {
         return 'otro';
     }
+}
+
+
+
+// Descargamos el documento con el nombre product.csv
+const download = function(data) {
+    const blob = new Blob(["\uFEFF" + data], { type: '"text/csv; charset=utf-8"' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('class', 'btn btn-success')
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'product.csv');
+    document.getElementById('descarga').appendChild(a);
+    a.click();
+    document.getElementById('descarga').removeChild(a);
+};
+
+const borrarFila = (e) => {
+    if (e.target.classList.contains('eliminar-fila')) {
+        let id = e.target.dataset.id;
+        listaProductos.splice(id, 1);
+    }
+    pintarTabla();
 }

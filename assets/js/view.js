@@ -35,6 +35,10 @@ var lista_modelos = _('modelos');
 
 var odooFile, selectFile;
 
+const item = document.getElementById('items');
+
+item.addEventListener('click', e => { borrarFila(e) })
+
 const refreshPage = () => window.location.reload();
 
 cargarEmpresas();
@@ -66,24 +70,22 @@ function change_visual() {
 }
 
 //Aquí se carga el documento y la información.
-btnOdooUp.onclick = () => {
-    console.log('odoo');
-    upload_doc();
-};
-
-//Aquí se carga el documento y la información.
-inputVendorDoc.addEventListener("change", (event) => {
-    selectFile = event.target.files[0];
+btnOdooUp.addEventListener("click", () => {
+    if (inputOdooDoc.files[0]) {
+        upload_doc(inputOdooDoc.files[0]);
+    } else {
+        alert('¡Por favor cargue el archivo!');
+        refreshPage();
+    }
 });
 
 //Aquí se carga el documento y la información.
 btnVendorUp.addEventListener("click", () => {
-    console.log('vendor', selectFile);
 
     doc_proveedor = true;
 
-    if (selectFile) {
-        upload_doc_vendor();
+    if (inputVendorDoc.files[0]) {
+        upload_doc(inputVendorDoc.files[0]);
     } else {
         alert('¡Por favor cargue el archivo!');
         refreshPage();

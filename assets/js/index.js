@@ -10,64 +10,13 @@ let listaProductos = [],
     noEncontrados = [],
     proveedor = [];
 
-const item = document.getElementById('items');
 const templateLista = document.getElementById('template-lista').content;
 const fragment = document.createDocumentFragment();
 
+function upload_doc(doc) {
 
-
-
-item.addEventListener('click', e => { borrarFila(e) })
-
-function upload_doc() {
-    // Se valida si el se pulsa el botón "Cargar" sin un archivo y si el archivo no contiene el formato ".CSV"
-    if ($('#odoo-fileInput').get(0).files.length == 0) {
-        alert('¡Por favor cargue el archivo!');
-        refreshPage();
-    } else {
-
-        let fileUpload = $('#odoo-fileInput').get(0);
-        let files = fileUpload.files;
-        let reader = new FileReader();
-        let extension = validDocument(files[0].name);
-
-        if (extension === 'otro') {
-            alert("Por favor solo cargue archivos .XLS o .XLSX");
-            refreshPage();
-        } else {
-            reader.onload = function(e) {
-
-                if (extension === 'csv') {
-                    doc_text = e.target.result.split("\n"); // Dividimos texto del documento por salto de línea.
-                    convert_csv_to_array(doc_text);
-                } else {
-                    var data = "";
-                    var bytes = new Uint8Array(e.target.result);
-                    for (var i = 0; i < bytes.byteLength; i++) {
-                        data += String.fromCharCode(bytes[i]);
-                    }
-                    processExcel(data);
-                }
-            }
-
-            if (extension === 'csv') {
-                reader.readAsText($("#odoo-fileInput")[0].files[0]);
-            } else {
-                reader.readAsArrayBuffer($("#odoo-fileInput")[0].files[0]);
-            }
-        }
-        $('input[type="file"]').val('');
-    }
-};
-
-function upload_doc_vendor() {
-
-    // let fileUpload = $('#vendor-fileInput').get(0);
-    // let files = fileUpload.files;
     let reader = new FileReader();
-    reader.readAsBinaryString(selectFile);
-    let extension = validDocument(selectFile.name);
-
+    let extension = validDocument(doc.name);
 
     if (extension === 'otro') {
         alert("Por favor solo cargue archivos .XLS o .XLSX");
@@ -75,20 +24,46 @@ function upload_doc_vendor() {
     } else {
         reader.onload = function(e) {
 
-            var data = "";
+            if (extension === 'csv') {
+                doc_text = e.target.result.split("\n"); // Dividimos texto del documento por salto de línea.
+                convert_csv_to_array(doc_text);
+            } else {
+
+                var data = "";
+                var bytes = new Uint8Array(e.target.result);
+                for (var i = 0; i < bytes.byteLength; i++) {
+                    data += String.fromCharCode(bytes[i]);
+                }
+                processExcel(data);
+            }
+        }
+
+        if (extension === 'csv') {
+            reader.readAsText(doc);
+        } else {
+            reader.readAsArrayBuffer(doc);
+        }
+    }
+    $('input[type="file"]').val('');
+
+};
+
+function upload_doc_vendor() {
+
+    let reader = new FileReader();
+    reader.readAsBinaryString(inputVendorDoc.files[0]);
+    let extension = validDocument(inputVendorDoc.files[0].name);
+
+    if (extension === 'otro') {
+        alert("Por favor solo cargue archivos .XLS o .XLSX");
+        refreshPage();
+    } else {
+        reader.onload = function(e) {
+
             var bytes = e.target.result;
-            // for (var i = 0; i < bytes.byteLength; i++) {
-            //     data += String.fromCharCode(bytes[i]);
-            // }
             processExcelVendor(bytes);
 
         }
-
-        // if (extension === 'csv') {
-        //     reader.readAsText($("#vendor-fileInput")[0].files[0]);
-        // } else {
-        //     reader.readAsArrayBuffer($("#vendor-fileInput")[0].files[0]);
-        // }
     }
     $('input[type="file"]').val('');
 };
@@ -106,76 +81,16 @@ let processExcel = (data) => {
     //Read all rows from First Sheet into an JSON array.
     var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
 
-    if (es_moto === true) {
+    if (doc_proveedor === true) {
+        procesar_proveedor(excelRows);
+    } else if (es_moto === true) {
         procesar_moto(excelRows);
     } else {
         procesar_repuestos(excelRows);
     }
 
-}
-
-let processExcelVendor = (data) => {
-    //Read the Excel File data.
-    var workbook = XLSX.read(data, {
-        type: 'binary'
-    });
-
-    let excelRows;
-    //Fetch the name of First Sheet.
-    workbook.SheetNames.forEach(sheet => {
-        excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet]);
-    })
-
-    //Read all rows from First Sheet into an JSON array.
-    // var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
-
-    if (doc_proveedor === true) {
-        procesar_proveedor(excelRows);
-    }
 
 }
-
-
-// function upload_doc_vendor() {
-//     // Se valida si el se pulsa el botón "Cargar" sin un archivo y si el archivo no contiene el formato ".CSV"
-//     if ($('#vendor-fileInput').get(0).files.length == 0) {
-//         alert('¡Por favor cargue el archivo!');
-//         refreshPage();
-//     }
-
-//     let fileUpload = $('#vendor-fileInput').get(0);
-//     let files = fileUpload.files;
-//     let reader = new FileReader();
-//     let extension = validDocument(files[0].name);
-
-//     if (extension === 'otro') {
-//         alert("Por favor solo cargue archivos .XLS o .XLSX");
-//         refreshPage();
-//     } else {
-//         reader.onload = function(e) {
-
-//             if (extension === 'csv') {
-//                 doc_text = e.target.result.split("\n"); // Dividimos texto del documento por salto de línea.
-//                 convert_csv_to_array(doc_text);
-//             } else {
-//                 var data = "";
-//                 var bytes = new Uint8Array(e.target.result);
-//                 for (var i = 0; i < bytes.byteLength; i++) {
-//                     data += String.fromCharCode(bytes[i]);
-//                 }
-//                 processExcelVendor(data);
-//             }
-//         }
-
-//         if (extension === 'csv') {
-//             reader.readAsText($("#vendor-fileInput")[0].files[0]);
-//         } else {
-//             reader.readAsArrayBuffer($("#vendor-fileInput")[0].files[0]);
-//         }
-//     }
-//     $('input[type="file"]').val('');
-// };
-
 
 function procesar_moto(motos) {
 
@@ -214,14 +129,12 @@ function procesar_moto(motos) {
 }
 
 function procesar_repuestos(reptos) {
-    console.log(reptos[1]);
     repuestos = reptos;
-    _('vendor').style.display = 'inline-block';
-    _('odoo').style.display = 'none';
+    grVendor.style.display = 'inline-block';
+    grOdoo.style.display = 'none';
 }
 
 function procesar_proveedor(archivoProveedor) {
-    console.log(archivoProveedor[1]);
     document.getElementById('vendor').style.display = 'none';
     document.getElementById('cards-info').style.display = 'flex';
     // grSelect2.style.display = 'flex';
@@ -474,13 +387,7 @@ function pintarTabla() {
     });
 }
 
-const borrarFila = e => {
-    if (e.target.classList.contains('eliminar-fila')) {
-        let id = e.target.dataset.id;
-        listaProductos.splice(id, 1);
-    }
-    pintarTabla();
-}
+
 
 $(document).on('click', 'button#confirmar', function(e) {
     newProducto = {}
@@ -495,61 +402,60 @@ $(document).on('click', 'button#confirmar', function(e) {
     }
 });
 
-$(document).on('click', 'a#generar-encontrados', function(e) {
+
+btnGenerarEncontrados.onclick = (e) => {
 
     id = '', precio = '';
 
     let i = 0;
     actualizar.splice(0)
-    if (window.confirm("Revise muy bien las fechas!")) {
-        let fila = 1;
-        family.forEach(elemento => {
-            newProducto = {}
 
-            if (fila == 1) {
-                newProducto['company'] = company;
-                newProducto['Lista de precios'] = getListName(inicio);
-                newProducto['Política de descuento'] = 'Descuento incluido en el precio';
-                newProducto['item_ids/applied_on'] = 'Variantes de producto';
-                newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = elemento['id'];
-                newProducto['item_ids/min_quantity'] = 1;
-                newProducto['item_ids/date_start'] = inicio;
-                newProducto['item_ids/date_end'] = fin;
-                newProducto['item_ids/compute_price'] = 'Fixed Price';
-                newProducto['item_ids/fixed_price'] = parseInt(elemento['precio'].replace(',', ''));
-                actualizar.push(newProducto);
+    let fila = 1;
+    family.forEach(elemento => {
+        newProducto = {}
 
-            } else {
-                // delete newProducto['id'];
-                newProducto['company'] = '';
-                newProducto['Lista de precios'] = '';
-                newProducto['Política de descuento'] = '';
-                newProducto['item_ids/applied_on'] = 'Variantes de producto';
-                newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = elemento['id'];
-                newProducto['item_ids/min_quantity'] = 1;
-                newProducto['item_ids/date_start'] = inicio;
-                newProducto['item_ids/date_end'] = fin;
-                newProducto['item_ids/compute_price'] = 'Fixed Price';
-                newProducto['item_ids/fixed_price'] = parseInt(elemento['precio'].replace(',', ''));
-                actualizar.push(newProducto);
-            }
-            fila++;
-        });
+        if (fila == 1) {
+            newProducto['company'] = company;
+            newProducto['Lista de precios'] = getListName(inicio);
+            newProducto['Política de descuento'] = 'Descuento incluido en el precio';
+            newProducto['item_ids/applied_on'] = 'Variantes de producto';
+            newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = elemento['id'];
+            newProducto['item_ids/min_quantity'] = 1;
+            newProducto['item_ids/date_start'] = inicio;
+            newProducto['item_ids/date_end'] = fin;
+            newProducto['item_ids/compute_price'] = 'Fixed Price';
+            newProducto['item_ids/fixed_price'] = parseInt(elemento['precio'].replace(',', ''));
+            actualizar.push(newProducto);
 
-        csvData = objectToCsv(actualizar);
-        actualizar = Object.assign({}, actualizar);
-        download(csvData);
+        } else {
+            // delete newProducto['id'];
+            newProducto['company'] = '';
+            newProducto['Lista de precios'] = '';
+            newProducto['Política de descuento'] = '';
+            newProducto['item_ids/applied_on'] = 'Variantes de producto';
+            newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = elemento['id'];
+            newProducto['item_ids/min_quantity'] = 1;
+            newProducto['item_ids/date_start'] = inicio;
+            newProducto['item_ids/date_end'] = fin;
+            newProducto['item_ids/compute_price'] = 'Fixed Price';
+            newProducto['item_ids/fixed_price'] = parseInt(elemento['precio'].replace(',', ''));
+            actualizar.push(newProducto);
+        }
+        fila++;
+    });
 
-    }
+    csvData = objectToCsv(actualizar);
+    actualizar = Object.assign({}, actualizar);
 
+    download(csvData);
 
-});
+};
 
 
-$(document).on('click', 'a#confirmarTodo', function(e) {
+btnDescargar.onclick = (e) => {
     newProducto = {}
     id = '';
-    actualizar.splice(0)
+    actualizar.splice(0);
     if (listaProductos.length !== 0) {
 
         let fila = 1;
@@ -597,92 +503,10 @@ $(document).on('click', 'a#confirmarTodo', function(e) {
         });
         csvData = objectToCsv(actualizar);
         actualizar = Object.assign({}, actualizar);
+        refreshPage();
         download(csvData);
 
-        alert('¡No hay elementos agregados a la lista!')
-    }
-
-
-});
-
-
-$(document).on('click', 'a#confirmarTodo', function(e) {
-    newProducto = {}
-    id = '';
-    actualizar.splice(0)
-    if (listaProductos.length !== 0) {
-        if (window.confirm("Revise muy bien las fechas!")) {
-            let fila = 1;
-            listaProductos.forEach(lista => {
-                original_productos.forEach(original => {
-                    if (lista.referencia === original['Referencia Interna'] && lista.modelo === original['Atributos del Valor']) {
-                        id = original['ID']
-                        delete original['Atributos del Valor'];
-                        delete original['Nombre'];
-                        delete original['Referencia Interna'];
-                        delete original['Es vehículo'];
-                        delete original['Tipo de producto'];
-                        newProducto = original;
-                        if (fila == 1) {
-                            delete newProducto['ID'];
-                            newProducto['company'] = company;
-                            newProducto['Lista de precios'] = getListName(inicio);
-                            newProducto['Política de descuento'] = 'Descuento incluido en el precio';
-                            newProducto['item_ids/applied_on'] = 'Variantes de producto';
-                            newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = id;
-                            newProducto['item_ids/min_quantity'] = 1;
-                            newProducto['item_ids/date_start'] = inicio;
-                            newProducto['item_ids/date_end'] = fin;
-                            newProducto['item_ids/compute_price'] = 'Fixed Price';
-                            newProducto['item_ids/fixed_price'] = lista.precio;
-                            actualizar.push(newProducto);
-
-                        } else {
-                            delete newProducto['ID'];
-                            newProducto['company'] = '';
-                            newProducto['Lista de precios'] = '';
-                            newProducto['Política de descuento'] = '';
-                            newProducto['item_ids/applied_on'] = 'Variantes de producto';
-                            newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = id;
-                            newProducto['item_ids/min_quantity'] = 1;
-                            newProducto['item_ids/date_start'] = inicio;
-                            newProducto['item_ids/date_end'] = fin;
-                            newProducto['item_ids/compute_price'] = 'Fixed Price';
-                            newProducto['item_ids/fixed_price'] = lista.precio;
-                            actualizar.push(newProducto);
-                        }
-                        fila++;
-                    }
-                });
-            });
-            csvData = objectToCsv(actualizar);
-            actualizar = Object.assign({}, actualizar);
-            download(csvData);
-        }
     } else {
         alert('¡No hay elementos agregados a la lista!')
     }
-
-});
-
-
-
-
-// Creamos el csv a partir de la lista final de productos para actualizar
-function objectToCsv(lista) {
-
-    const csvRows = [];
-    // Headers
-    const headers = Object.keys(lista[0]);
-    csvRows.push(headers.join(','));
-    // Ciclo en filas
-    for (const row of lista) {
-        const values = headers.map(header => {
-            // const escaped = row[header].replace(/"/g,'\\"')
-            return `${row[header]}`;
-        });
-        csvRows.push(values.join(','));
-    }
-    return csvRows.join('\n');
-    //CSV
-}
+};

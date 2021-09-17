@@ -551,18 +551,10 @@ $(document).on('click', 'button#confirmar', function(e) {
     newProducto = {}
     actualizar.splice(0)
     if (listaProductos.length !== 0) {
-<<<<<<< HEAD
         tablaProducto.style.display = 'none';
         grSelect1.style.display = 'none';
         btnDescargar.style.display = 'inline-block';
-=======
-        if (window.confirm("Revise muy bien todas las referencias que desea actualizar")) {
-            tablaProducto.style.display = 'none';
-            grSelect1.style.display = 'none';
-            btnDescargar.style.display = 'inline-block';
 
-        }
->>>>>>> 7708c5c6a73dfea16daee35b58663dd36e707139
     } else {
         alert('¡No hay elementos agregados a la lista!')
     }
@@ -612,7 +604,6 @@ $(document).on('click', 'a#generar-encontrados', function(e) {
         csvData = objectToCsv(actualizar);
         actualizar = Object.assign({}, actualizar);
         download(csvData);
-<<<<<<< HEAD
     }
 
 
@@ -677,8 +668,7 @@ $(document).on('click', 'a#confirmarTodo', function(e) {
 
 
 
-=======
-    }
+}
 
 
 });
@@ -743,7 +733,10 @@ $(document).on('click', 'a#confirmarTodo', function(e) {
 
 
 
->>>>>>> 7708c5c6a73dfea16daee35b58663dd36e707139
+    >>>
+    >>>
+    >
+    7708 c5c6a73dfea16daee35b58663dd36e707139
 });
 
 

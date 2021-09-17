@@ -551,9 +551,18 @@ $(document).on('click', 'button#confirmar', function(e) {
     newProducto = {}
     actualizar.splice(0)
     if (listaProductos.length !== 0) {
+<<<<<<< HEAD
         tablaProducto.style.display = 'none';
         grSelect1.style.display = 'none';
         btnDescargar.style.display = 'inline-block';
+=======
+        if (window.confirm("Revise muy bien todas las referencias que desea actualizar")) {
+            tablaProducto.style.display = 'none';
+            grSelect1.style.display = 'none';
+            btnDescargar.style.display = 'inline-block';
+
+        }
+>>>>>>> 7708c5c6a73dfea16daee35b58663dd36e707139
     } else {
         alert('¡No hay elementos agregados a la lista!')
     }
@@ -603,6 +612,7 @@ $(document).on('click', 'a#generar-encontrados', function(e) {
         csvData = objectToCsv(actualizar);
         actualizar = Object.assign({}, actualizar);
         download(csvData);
+<<<<<<< HEAD
     }
 
 
@@ -667,6 +677,73 @@ $(document).on('click', 'a#confirmarTodo', function(e) {
 
 
 
+=======
+    }
+
+
+});
+
+
+$(document).on('click', 'a#confirmarTodo', function(e) {
+    newProducto = {}
+    id = '';
+    actualizar.splice(0)
+    if (listaProductos.length !== 0) {
+        if (window.confirm("Revise muy bien las fechas!")) {
+            let fila = 1;
+            listaProductos.forEach(lista => {
+                original_productos.forEach(original => {
+                    if (lista.referencia === original['Referencia Interna'] && lista.modelo === original['Atributos del Valor']) {
+                        id = original['ID']
+                        delete original['Atributos del Valor'];
+                        delete original['Nombre'];
+                        delete original['Referencia Interna'];
+                        delete original['Es vehículo'];
+                        delete original['Tipo de producto'];
+                        newProducto = original;
+                        if (fila == 1) {
+                            delete newProducto['ID'];
+                            newProducto['company'] = company;
+                            newProducto['Lista de precios'] = getNombreLista(inicio);
+                            newProducto['Política de descuento'] = 'Descuento incluido en el precio';
+                            newProducto['item_ids/applied_on'] = 'Variantes de producto';
+                            newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = id;
+                            newProducto['item_ids/min_quantity'] = 1;
+                            newProducto['item_ids/date_start'] = inicio;
+                            newProducto['item_ids/date_end'] = fin;
+                            newProducto['item_ids/compute_price'] = 'Fixed Price';
+                            newProducto['item_ids/fixed_price'] = lista.precio;
+                            actualizar.push(newProducto);
+
+                        } else {
+                            delete newProducto['ID'];
+                            newProducto['company'] = '';
+                            newProducto['Lista de precios'] = '';
+                            newProducto['Política de descuento'] = '';
+                            newProducto['item_ids/applied_on'] = 'Variantes de producto';
+                            newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = id;
+                            newProducto['item_ids/min_quantity'] = 1;
+                            newProducto['item_ids/date_start'] = inicio;
+                            newProducto['item_ids/date_end'] = fin;
+                            newProducto['item_ids/compute_price'] = 'Fixed Price';
+                            newProducto['item_ids/fixed_price'] = lista.precio;
+                            actualizar.push(newProducto);
+                        }
+                        fila++;
+                    }
+                });
+            });
+            csvData = objectToCsv(actualizar);
+            actualizar = Object.assign({}, actualizar);
+            download(csvData);
+        }
+    } else {
+        alert('¡No hay elementos agregados a la lista!')
+    }
+
+
+
+>>>>>>> 7708c5c6a73dfea16daee35b58663dd36e707139
 });
 
 

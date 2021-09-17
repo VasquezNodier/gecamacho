@@ -27,12 +27,15 @@ let inputOdooDoc = _('odoo-fileInput');
 let inputVendorDoc = _('vendor-fileInput');
 
 let progressBar = _('progress');
-var esMoto = false;
+var esMoto = false,
+    doc_proveedor = false;
 
 var lista_referencias = _('referencias');
 var lista_modelos = _('modelos');
 
-var odooFile;
+var odooFile, selectFile;
+
+const refreshPage = () => window.location.reload();
 
 cargarEmpresas();
 
@@ -61,3 +64,28 @@ function change_visual() {
     grOdoo.style.display = 'inline-block';
 
 }
+
+//Aquí se carga el documento y la información.
+btnOdooUp.onclick = () => {
+    console.log('odoo');
+    upload_doc();
+};
+
+//Aquí se carga el documento y la información.
+inputVendorDoc.addEventListener("change", (event) => {
+    selectFile = event.target.files[0];
+});
+
+//Aquí se carga el documento y la información.
+btnVendorUp.addEventListener("click", () => {
+    console.log('vendor', selectFile);
+
+    doc_proveedor = true;
+
+    if (selectFile) {
+        upload_doc_vendor();
+    } else {
+        alert('¡Por favor cargue el archivo!');
+        refreshPage();
+    }
+});

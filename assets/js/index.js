@@ -1,6 +1,6 @@
 console.log('GECamacho');
 
-let selectFile;
+
 let listaProductos = [],
     original_productos = [],
     actualizar = [],
@@ -15,41 +15,9 @@ const templateLista = document.getElementById('template-lista').content;
 const fragment = document.createDocumentFragment();
 
 
-// let grSelect1 = document.getElementById('groupRefsModels');
-// let tablaProducto = document.getElementById('div-table');
-// let grSelect2 = document.getElementById('groupCompanyDates');
-// let lstCompany = document.getElementById('company');
-
-var es_moto = false,
-    doc_proveedor = false;
 
 
 item.addEventListener('click', e => { borrarFila(e) })
-
-
-
-
-//Aquí se carga el documento y la información.
-document.getElementById('odoo-btnUpload').onclick = () => {
-    upload_doc();
-};
-
-//Aquí se carga el documento y la información.
-document.getElementById('vendor-fileInput').addEventListener("change", (event) => {
-    selectFile = event.target.files[0];
-});
-
-//Aquí se carga el documento y la información.
-document.getElementById('vendor-btnUpload').addEventListener("click", () => {
-    doc_proveedor = true;
-
-    if (selectFile) {
-        upload_doc_vendor();
-    } else {
-        alert('¡Por favor cargue el archivo!');
-        refreshPage();
-    }
-});
 
 function upload_doc() {
     // Se valida si el se pulsa el botón "Cargar" sin un archivo y si el archivo no contiene el formato ".CSV"
@@ -61,7 +29,7 @@ function upload_doc() {
         let fileUpload = $('#odoo-fileInput').get(0);
         let files = fileUpload.files;
         let reader = new FileReader();
-        let extension = documento_valido(files[0].name);
+        let extension = validDocument(files[0].name);
 
         if (extension === 'otro') {
             alert("Por favor solo cargue archivos .XLS o .XLSX");
@@ -78,7 +46,7 @@ function upload_doc() {
                     for (var i = 0; i < bytes.byteLength; i++) {
                         data += String.fromCharCode(bytes[i]);
                     }
-                    process_Excel(data);
+                    processExcel(data);
                 }
             }
 
@@ -98,7 +66,7 @@ function upload_doc_vendor() {
     // let files = fileUpload.files;
     let reader = new FileReader();
     reader.readAsBinaryString(selectFile);
-    let extension = documento_valido(selectFile.name);
+    let extension = validDocument(selectFile.name);
 
 
     if (extension === 'otro') {
@@ -112,7 +80,7 @@ function upload_doc_vendor() {
             // for (var i = 0; i < bytes.byteLength; i++) {
             //     data += String.fromCharCode(bytes[i]);
             // }
-            process_Excel_Vendor(bytes);
+            processExcelVendor(bytes);
 
         }
 
@@ -126,47 +94,7 @@ function upload_doc_vendor() {
 };
 
 
-// function upload_doc_vendor() {
-//     // Se valida si el se pulsa el botón "Cargar" sin un archivo y si el archivo no contiene el formato ".CSV"
-//     if ($('#vendor-fileInput').get(0).files.length == 0) {
-//         alert('¡Por favor cargue el archivo!');
-//         refreshPage();
-//     }
-
-//     let fileUpload = $('#vendor-fileInput').get(0);
-//     let files = fileUpload.files;
-//     let reader = new FileReader();
-//     let extension = documento_valido(files[0].name);
-
-//     if (extension === 'otro') {
-//         alert("Por favor solo cargue archivos .XLS o .XLSX");
-//         refreshPage();
-//     } else {
-//         reader.onload = function(e) {
-
-//             if (extension === 'csv') {
-//                 doc_text = e.target.result.split("\n"); // Dividimos texto del documento por salto de línea.
-//                 convert_csv_to_array(doc_text);
-//             } else {
-//                 var data = "";
-//                 var bytes = new Uint8Array(e.target.result);
-//                 for (var i = 0; i < bytes.byteLength; i++) {
-//                     data += String.fromCharCode(bytes[i]);
-//                 }
-//                 process_Excel_Vendor(data);
-//             }
-//         }
-
-//         if (extension === 'csv') {
-//             reader.readAsText($("#vendor-fileInput")[0].files[0]);
-//         } else {
-//             reader.readAsArrayBuffer($("#vendor-fileInput")[0].files[0]);
-//         }
-//     }
-//     $('input[type="file"]').val('');
-// };
-
-function process_Excel(data) {
+let processExcel = (data) => {
     //Read the Excel File data.
     var workbook = XLSX.read(data, {
         type: 'binary'
@@ -184,10 +112,9 @@ function process_Excel(data) {
         procesar_repuestos(excelRows);
     }
 
-};
+}
 
-
-function process_Excel_Vendor(data) {
+let processExcelVendor = (data) => {
     //Read the Excel File data.
     var workbook = XLSX.read(data, {
         type: 'binary'
@@ -197,9 +124,7 @@ function process_Excel_Vendor(data) {
     //Fetch the name of First Sheet.
     workbook.SheetNames.forEach(sheet => {
         excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet]);
-
     })
-
 
     //Read all rows from First Sheet into an JSON array.
     // var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
@@ -208,7 +133,49 @@ function process_Excel_Vendor(data) {
         procesar_proveedor(excelRows);
     }
 
-};
+}
+
+
+// function upload_doc_vendor() {
+//     // Se valida si el se pulsa el botón "Cargar" sin un archivo y si el archivo no contiene el formato ".CSV"
+//     if ($('#vendor-fileInput').get(0).files.length == 0) {
+//         alert('¡Por favor cargue el archivo!');
+//         refreshPage();
+//     }
+
+//     let fileUpload = $('#vendor-fileInput').get(0);
+//     let files = fileUpload.files;
+//     let reader = new FileReader();
+//     let extension = validDocument(files[0].name);
+
+//     if (extension === 'otro') {
+//         alert("Por favor solo cargue archivos .XLS o .XLSX");
+//         refreshPage();
+//     } else {
+//         reader.onload = function(e) {
+
+//             if (extension === 'csv') {
+//                 doc_text = e.target.result.split("\n"); // Dividimos texto del documento por salto de línea.
+//                 convert_csv_to_array(doc_text);
+//             } else {
+//                 var data = "";
+//                 var bytes = new Uint8Array(e.target.result);
+//                 for (var i = 0; i < bytes.byteLength; i++) {
+//                     data += String.fromCharCode(bytes[i]);
+//                 }
+//                 processExcelVendor(data);
+//             }
+//         }
+
+//         if (extension === 'csv') {
+//             reader.readAsText($("#vendor-fileInput")[0].files[0]);
+//         } else {
+//             reader.readAsArrayBuffer($("#vendor-fileInput")[0].files[0]);
+//         }
+//     }
+//     $('input[type="file"]').val('');
+// };
+
 
 function procesar_moto(motos) {
 
@@ -247,13 +214,14 @@ function procesar_moto(motos) {
 }
 
 function procesar_repuestos(reptos) {
+    console.log(reptos[1]);
     repuestos = reptos;
-    document.getElementById('vendor').style.display = 'inline-block';
-    document.getElementById('odoo').style.display = 'none';
-    // console.log(repuestos);
+    _('vendor').style.display = 'inline-block';
+    _('odoo').style.display = 'none';
 }
 
 function procesar_proveedor(archivoProveedor) {
+    console.log(archivoProveedor[1]);
     document.getElementById('vendor').style.display = 'none';
     document.getElementById('cards-info').style.display = 'flex';
     // grSelect2.style.display = 'flex';
@@ -276,7 +244,7 @@ function procesar_proveedor(archivoProveedor) {
     repuestos.forEach(element => {
         let obj = {}
 
-        let hay = buscarElemento(proveedor, element['default_code']);
+        let hay = searchElement(proveedor, element['default_code']);
 
         if (hay == -1) {
             noEncontrados.push(element)
@@ -319,39 +287,6 @@ function procesar_proveedor(archivoProveedor) {
 
 
 
-//Búsqueda secuencial en el arreglo de productos del proveedor
-function buscarElemento(arreglo, texto) {
-    let found = false;
-    let position = -1;
-    let index = 0;
-
-    while (!found && index < arreglo.length) {
-        if (arreglo[index]['PARTE No.'] == texto) {
-            found = true;
-            position = index;
-        } else if (arreglo[index]['HOMOLOGACIONES'].includes(texto)) {
-            found = true;
-            position = index;
-        } else {
-            index += 1;
-        }
-    }
-    return position;
-}
-
-// Verificar si se ingresa un archivo con la extensión apropiada.
-function documento_valido(name) {
-    if (name.lastIndexOf('.csv') != -1) {
-        return 'csv';
-    } else if (name.lastIndexOf('.xlsx') != -1) {
-        return 'xlsx';
-    } else {
-        return 'otro';
-    }
-}
-
-// Refrescar la página
-const refreshPage = () => window.location.reload();
 
 //Corvertimos el texto separado por comas del archivo en un array
 const convert_csv_to_array = (rows) => {
@@ -573,7 +508,7 @@ $(document).on('click', 'a#generar-encontrados', function(e) {
 
             if (fila == 1) {
                 newProducto['company'] = company;
-                newProducto['Lista de precios'] = getNombreLista(inicio);
+                newProducto['Lista de precios'] = getListName(inicio);
                 newProducto['Política de descuento'] = 'Descuento incluido en el precio';
                 newProducto['item_ids/applied_on'] = 'Variantes de producto';
                 newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = elemento['id'];
@@ -631,7 +566,7 @@ $(document).on('click', 'a#confirmarTodo', function(e) {
                     if (fila == 1) {
                         delete newProducto['ID'];
                         newProducto['company'] = company;
-                        newProducto['Lista de precios'] = getNombreLista(inicio);
+                        newProducto['Lista de precios'] = getListName(inicio);
                         newProducto['Política de descuento'] = 'Descuento incluido en el precio';
                         newProducto['item_ids/applied_on'] = 'Variantes de producto';
                         newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = id;
@@ -691,7 +626,7 @@ $(document).on('click', 'a#confirmarTodo', function(e) {
                         if (fila == 1) {
                             delete newProducto['ID'];
                             newProducto['company'] = company;
-                            newProducto['Lista de precios'] = getNombreLista(inicio);
+                            newProducto['Lista de precios'] = getListName(inicio);
                             newProducto['Política de descuento'] = 'Descuento incluido en el precio';
                             newProducto['item_ids/applied_on'] = 'Variantes de producto';
                             newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = id;
@@ -732,41 +667,6 @@ $(document).on('click', 'a#confirmarTodo', function(e) {
 
 
 
-function getNombreLista(inicio) {
-    const segundos = Date.now();
-    inicio = new Date(inicio);
-
-    let nombre = 'Precios ';
-    let periodo = '',
-        mes = '',
-        hora = '',
-        dia = '';
-
-    if (inicio.getUTCDate() > 15) {
-        periodo = 'L2';
-    } else {
-        periodo = 'L1';
-    }
-    if (inicio.getUTCDate() > 9) {
-        dia = inicio.getUTCDate();
-    } else {
-        dia = '0' + inicio.getUTCDate();
-    }
-    if (inicio.getMonth() + 1 > 9) {
-        mes = inicio.getMonth() + 1;
-    } else {
-        mes = '0' + (inicio.getMonth() + 1);
-    }
-
-    if (inicio.getHours() > 9) {
-        hora = inicio.getHours();
-    } else {
-        hora = '0' + inicio.getHours();
-    }
-
-    nombre += mes + '-' + periodo + ' ' + dia + hora;
-    return nombre;
-}
 
 // Creamos el csv a partir de la lista final de productos para actualizar
 function objectToCsv(lista) {
@@ -786,18 +686,3 @@ function objectToCsv(lista) {
     return csvRows.join('\n');
     //CSV
 }
-
-// Descargamos el documento con el nombre product.csv
-const download = function(data) {
-    const blob = new Blob(["\uFEFF" + data], { type: '"text/csv; charset=utf-8"' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('class', 'btn btn-success')
-    a.setAttribute('hidden', '');
-    a.setAttribute('href', url);
-    a.setAttribute('download', 'product.csv');
-    document.getElementById('descarga').appendChild(a);
-    a.click();
-    document.getElementById('descarga').removeChild(a);
-    refreshPage();
-};

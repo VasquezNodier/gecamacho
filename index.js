@@ -668,17 +668,6 @@ $(document).on('click', 'a#confirmarTodo', function(e) {
     }
 
 
-
-    <<
-    << << < HEAD
-        ===
-        === = ===
-        ===
-        = >>>
-        >>> > c20606d7269e877f7b54922d7c6f43f7261b5258
-}
-
-
 });
 
 
@@ -739,17 +728,6 @@ $(document).on('click', 'a#confirmarTodo', function(e) {
         alert('¡No hay elementos agregados a la lista!')
     }
 
-
-
-    >>>
-    <<
-    << << < HEAD
-        >>>
-        >
-        7708 c5c6a73dfea16daee35b58663dd36e707139 ===
-        === = >>>
-        > 7708 c5c6a73dfea16daee35b58663dd36e707139 >>>
-        >>> > c20606d7269e877f7b54922d7c6f43f7261b5258
 });
 
 

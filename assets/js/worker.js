@@ -12,11 +12,13 @@ self.addEventListener('message', function(evt) {
     //  haciendo una búsqueda secuencial, dado qeu es una lista desordenada.
     repuestos.forEach(element => {
         let obj = {}
+        let homo = {}
 
         let hay = searchElement(proveedor, element['default_code']);
 
         if (hay == -1) {
             noEncontrados.push(element)
+
         } else if (element['default_code'] === proveedor[hay]['PARTE No.']) {
             obj['id'] = element['id']
             obj['default_code'] = element['default_code']
@@ -28,12 +30,18 @@ self.addEventListener('message', function(evt) {
         } else if (proveedor[hay]['HOMOLOGACIONES'].includes(element['default_code'])) {
             obj['id'] = element['id']
             obj['default_code'] = element['default_code']
-            obj['refFamily'] = proveedor[hay]['PARTE No.']
-            obj['name'] = element['name']
-            obj['nombreFamily'] = proveedor[hay]['DESCRIPCIÓN']
             obj['precio'] = proveedor[hay]['PRECIO SUGERIDO AL PÚBLICO INCLUIDO IMPUESTOS']
-            obj['homologado'] = proveedor[hay]['HOMOLOGACIONES']
-            homologados.push(obj)
+
+            family.push(obj)
+            homo['ID ODOO'] = element['id']
+            homo['REFERENCIA ODOO'] = element['default_code']
+            homo['NOMBRE ODOO'] = element['name']
+            homo['REFERENCIA FAMILY'] = proveedor[hay]['PARTE No.']
+            homo['NOMBRE FAMILY'] = proveedor[hay]['DESCRIPCIÓN']
+            homo['PRECIO'] = parseInt(proveedor[hay]['PRECIO SUGERIDO AL PÚBLICO INCLUIDO IMPUESTOS'].replace(',', ''));
+
+
+            homologados.push(homo)
         }
         i++;
 
@@ -49,8 +57,6 @@ self.addEventListener('message', function(evt) {
         }
 
     });
-
-
 })
 
 //Búsqueda secuencial en el arreglo de productos del proveedor

@@ -497,6 +497,20 @@ btnDescargar.onclick = (e) => {
     }
 };
 
+btnGenerarHomologados.onclick = () => {
+    console.log(homologados);
+    csvData = objectToCsv(homologados);
+    actualizar = Object.assign({}, homologados);
+    download(csvData);
+}
+
+btnGenerarNoEncontrados.onclick = () => {
+    console.log(noEncontrados);
+    csvData = objectToCsv(noEncontrados);
+    actualizar = Object.assign({}, homologados);
+    download(csvData);
+}
+
 _('returnOdoo').onclick = () => {
     refreshPage();
 }

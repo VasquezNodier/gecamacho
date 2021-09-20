@@ -10,7 +10,7 @@ let listaProductos = [],
     noEncontrados = [],
     proveedor = [];
 
-const templateLista = document.getElementById('template-lista').content;
+const templateLista = _('template-lista').content;
 const fragment = document.createDocumentFragment();
 
 function upload_doc(doc) {
@@ -61,7 +61,7 @@ function upload_doc_vendor() {
         reader.onload = function(e) {
 
             var bytes = e.target.result;
-            processExcelVendor(bytes);
+            processExcel(bytes);
 
         }
     }
@@ -83,13 +83,12 @@ let processExcel = (data) => {
 
     if (doc_proveedor === true) {
         procesar_proveedor(excelRows);
+
     } else if (es_moto === true) {
         procesar_moto(excelRows);
     } else {
         procesar_repuestos(excelRows);
     }
-
-
 }
 
 function procesar_moto(motos) {
@@ -134,11 +133,10 @@ function procesar_repuestos(reptos) {
     grOdoo.style.display = 'none';
 }
 
+var j = 0;
+
 function procesar_proveedor(archivoProveedor) {
-    document.getElementById('vendor').style.display = 'none';
-    document.getElementById('cards-info').style.display = 'flex';
-    // grSelect2.style.display = 'flex';
-    document.getElementById('confirmarTodo').style.display = 'none';
+
 
     archivoProveedor.forEach(element => {
         element['HOMOLOGACIONES'] = [];
@@ -149,42 +147,28 @@ function procesar_proveedor(archivoProveedor) {
             proveedor[proveedor.length - 1]['HOMOLOGACIONES'].push(element['PARTE No.'].replace('*', '').trim());
         }
     });
-    // console.log(proveedor);
-    let i = 0;
 
-    // Recorremos la lista de los repuestos del almacén y la comparamos con los repuestos de family,
-    //  haciendo una búsqueda secuencial, dado qeu es una lista desordenada.
-    repuestos.forEach(element => {
-        let obj = {}
-
-        let hay = searchElement(proveedor, element['default_code']);
-
-        if (hay == -1) {
-            noEncontrados.push(element)
-        } else if (element['default_code'] === proveedor[hay]['PARTE No.']) {
-            obj['id'] = element['id']
-            obj['default_code'] = element['default_code']
-                // obj['refFamily'] = proveedor[hay]['PARTE No.']
-                // obj['name'] = element['name']
-                // obj['nombreFamily'] = proveedor[hay]['DESCRIPCIÓN']
-            obj['precio'] = proveedor[hay]['PRECIO SUGERIDO AL PÚBLICO INCLUIDO IMPUESTOS']
-            family.push(obj)
-        } else if (proveedor[hay]['HOMOLOGACIONES'].includes(element['default_code'])) {
-            obj['id'] = element['id']
-            obj['default_code'] = element['default_code']
-            obj['refFamily'] = proveedor[hay]['PARTE No.']
-            obj['name'] = element['name']
-            obj['nombreFamily'] = proveedor[hay]['DESCRIPCIÓN']
-            obj['precio'] = proveedor[hay]['PRECIO SUGERIDO AL PÚBLICO INCLUIDO IMPUESTOS']
-            obj['homologado'] = proveedor[hay]['HOMOLOGACIONES']
-            homologados.push(obj)
-        }
-        i++;
+    const worker = new window.Worker('./assets/js/worker.js')
+    worker.postMessage({
+        prov: proveedor,
+        reps: repuestos
+    })
+    worker.addEventListener('message', function(evt) {
+        family = evt.data.find
+        noEncontrados = evt.data.nofind
+        homologados = evt.data.homo
+        porc = evt.data.porcentaje
+        display(family, noEncontrados, homologados, porc);
+        // _('barVendor').style.width = evt.data.porcentaje + '%';
     });
+}
 
-    document.getElementById('cant-finded').innerHTML = family.length;
-    document.getElementById('cant-homolo').innerHTML = homologados.length;
-    document.getElementById('cant-no-finded').innerHTML = noEncontrados.length;
+
+const display = (family, noEncontrados, homologados, porc) => {
+
+    _('cant-finded').innerHTML = family.length;
+    _('cant-homolo').innerHTML = homologados.length;
+    _('cant-no-finded').innerHTML = noEncontrados.length;
     let cards = document.getElementsByClassName('widget-49-meeting-time')
     for (let a = 0; a < cards.length; a++) {
         const element = cards[a];
@@ -192,14 +176,17 @@ function procesar_proveedor(archivoProveedor) {
     }
 
     let bts = document.getElementsByClassName('descargar')
-    for (let a = 0; a < bts.length; a++) {
-        const element = bts[a];
-        element.style.display = 'inline-block';
+    if (porc === 100) {
+        for (let a = 0; a < bts.length; a++) {
+            const element = bts[a];
+            element.style.display = 'inline-block';
+        }
     }
+
+    _('barVendor').style.width = porc + '%';
+    _('barVendor').innerHTML = porc + '%';
+
 }
-
-
-
 
 //Corvertimos el texto separado por comas del archivo en un array
 const convert_csv_to_array = (rows) => {
@@ -341,7 +328,6 @@ function obtener_datos(productos) {
             });
             if (esCorrecto == true) { // Se utiliza la bandera para agregar el producto a la lista
                 if (!listaProductos.find(o => o.referencia === obj.referencia && o === obj.modelo)) {
-                    // console.log(o);
                     agregarProducto(obj);
                 } else {
                     alert('¡El producto fue ingresado en la lista!')
@@ -408,7 +394,7 @@ btnGenerarEncontrados.onclick = (e) => {
     id = '', precio = '';
 
     let i = 0;
-    actualizar.splice(0)
+    // actualizar.splice(0)
 
     let fila = 1;
     family.forEach(elemento => {

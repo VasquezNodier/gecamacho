@@ -12,8 +12,6 @@ const cargarEmpresas = () => {
     lstCompany.innerHTML = options;
 }
 
-
-
 const getCompanyAndDates = () => {
     company = _('input-company').value;
     inicio = _('start-date').value;
@@ -32,26 +30,6 @@ const getCompanyAndDates = () => {
     }
 }
 
-
-//Búsqueda secuencial en el arreglo de productos del proveedor
-function searchElement(arreglo, texto) {
-    let found = false;
-    let position = -1;
-    let index = 0;
-
-    while (!found && index < arreglo.length) {
-        if (arreglo[index]['PARTE No.'] == texto) {
-            found = true;
-            position = index;
-        } else if (arreglo[index]['HOMOLOGACIONES'].includes(texto)) {
-            found = true;
-            position = index;
-        } else {
-            index += 1;
-        }
-    }
-    return position;
-}
 
 // Creamos el csv a partir de la lista final de productos para actualizar
 function objectToCsv(lista) {
@@ -128,8 +106,6 @@ const validDocument = (name) => {
         return 'otro';
     }
 }
-
-
 
 // Descargamos el documento con el nombre product.csv
 const download = function(data) {

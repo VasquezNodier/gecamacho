@@ -85,7 +85,15 @@ btnVendorUp.addEventListener("click", () => {
     doc_proveedor = true;
 
     if (inputVendorDoc.files[0]) {
-        upload_doc(inputVendorDoc.files[0]);
+
+        upload_doc_vendor(inputVendorDoc.files[0]);
+
+        _('vendor').style.display = 'none';
+        _('progressBarVendor').style.display = 'flex';
+        _('cards-info').style.display = 'flex';
+        _('confirmarTodo').style.display = 'none';
+
+
     } else {
         alert('¡Por favor cargue el archivo!');
         refreshPage();

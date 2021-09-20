@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="author" content="Nodier Alexander Vasquez">
-    <meta name="description" content="Página para generar listado de precios a partir de la importación de documento 
+    <meta name="description" content="Página para generar listado de precios a partir de la importación de documento
     con extensión .CSV para la empresa GECamacho.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex,follow">
@@ -19,6 +19,7 @@
 
     <!--CSS-->
     <link href="./assets/css/styles.css" rel="stylesheet" />
+    <link href="./assets/css/cards.css" rel="stylesheet" />
 
     <!--FONTS-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -34,6 +35,7 @@
     </header>
 
     <div class="container">
+
         <form class="row g-2" id="groupCompanyDates">
             <h6 id="tx-desc">1. Selecciona la empresa, la fecha de inicio y la fecha fin, para la lista:</h6>
 
@@ -83,7 +85,7 @@
 
             <div id="odoo">
                 <h6 id="text-ini">3. Adjunta el documento que descargaste desde ODOO.</h6>
-                <form id="form" action="/" enctype=multipart/form-data method="post">
+                <form id="uploadForm1" action="/" enctype=multipart/form-data method="post">
                     <div class="input-group">
                         <input type="file" class="form-control" accept=".xlsx" id="odoo-fileInput">
                         <a class="btn btn-outline-secondary" id="odoo-btnUpload">
@@ -91,27 +93,27 @@
                         </a>
 
                     </div>
-                    <div class="progress" id="progressBar">
-                        <div class="bar">0%</div>
-                    </div>
+                    <!-- <div class="progress" id="progressBarOdoo">
+                        <div id="barOdoo" class="bar">0%</div>
+                    </div> -->
                 </form>
             </div>
 
             <div id="vendor">
                 <h6 id="text-ini">4. Adjunta el archivo excel del proveedor.</h6>
-                <form action="/" enctype=multipart/form-data method="post">
+                <form id="uploadForm2" enctype=multipart/form-data method="post">
                     <div class="input-group">
                         <input type="file" class="form-control" accept=".xlsx" id="vendor-fileInput">
                         <a class="btn btn-outline-secondary" id="vendor-btnUpload">
                             Cargar
                         </a>
                     </div>
-
-                    <div class="progress" id="progressBar">
-                        <div class="bar">0%</div>
-                    </div>
                 </form>
 
+            </div>
+
+            <div class="modal">
+                <!-- Place at bottom of page -->
             </div>
 
             <form class="row g-2" id="groupRefsModels">
@@ -178,8 +180,17 @@
                 </div>
             </div>
 
+            <div class="progress" id="progressBarVendor">
+                <div id="barVendor" class="bar">Cargando...</div>
+            </div>
+
 
             <div class="row" id="cards-info">
+                <div class="progress" id="progressBarVendor">
+                    <div id="barVendor" class="bar">0%</div>
+
+                </div>
+
                 <div class="col-lg-4">
                     <div class="card card-margin">
                         <div class="card-header no-border">
@@ -321,6 +332,7 @@
     <script src="./assets/js/base.js"></script>
     <script src="./assets/js/view.js"></script>
     <script src="./assets/js/index.js"></script>
+    <!-- <script src="./assets/js/worker.js"></script> -->
 
     <!--Separate Popper and Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>

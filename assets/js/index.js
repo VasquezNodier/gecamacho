@@ -496,3 +496,15 @@ btnDescargar.onclick = (e) => {
         alert('¡No hay elementos agregados a la lista!')
     }
 };
+
+_('returnOdoo').onclick = () => {
+    refreshPage();
+}
+
+_('returnVendor').onclick = () => {
+    refreshPage();
+}
+
+_('returnProcess').onclick = () => {
+    refreshPage();
+}

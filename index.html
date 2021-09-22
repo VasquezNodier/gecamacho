@@ -28,63 +28,71 @@
 </head>
 
 <body>
-
     <header>
-        <h3 id="titulo">Actualización de listas precios</h3>
-        <h5>Grupo Empresarial Camacho</h5>
+        <nav class="navbar navbar-dark bg-dark">
+            <a class="navbar-brand" href="index.html">
+                <img src="./assets/images/company.png" width="64" height="64" class="d-inline-block align-top" alt="">
+            </a>
+            <h4 id="titulo">Actualización de listas precios</h4>
+        </nav>
+
     </header>
+    <div class="container" id="contenedor">
 
-    <div class="container">
+        <div id="groupCompanyDates">
+            <h6>1. Selecciona la empresa, la fecha de inicio y la fecha fin, para la lista:</h6>
+            <form class="g-2">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="input-company" class="form-label"><strong>Listado de Compañías:</strong></label>
+                        <input id="input-company" name="company" class="form-control" type="text" list="company" placeholder="Seleccione la companía">
+                        <datalist id="company"></datalist>
+                    </div>
 
-        <form class="row g-2" id="groupCompanyDates">
-            <h6 id="tx-desc">1. Selecciona la empresa, la fecha de inicio y la fecha fin, para la lista:</h6>
-
-            <div class="col-md-4">
-                <label for="input-company" class="form-label"><strong>Listado de Compañías:</strong></label>
-                <input id="input-company" name="company" class="form-control" type="text" list="company" placeholder="Seleccione la companía">
-                <datalist id="company"></datalist>
-            </div>
-
-            <div class="col-md-4">
-                <div class="fecha">
-                    <label for="start-date" class="form-label"><strong>Fecha de inicio:</strong></label>
-                    <input class="form-control" name="start-date" type="date" id="start-date">
+                    <div class="col-md-4">
+                        <div class="fecha">
+                            <label for="start-date" class="form-label"><strong>Fecha de inicio:</strong></label>
+                            <input class="form-control" name="start-date" type="date" id="start-date">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="fecha">
+                            <label for="end-date" class="form-label"><strong>Fecha fin:</strong></label>
+                            <input class="form-control" name="end-date" type="date" id="end-date">
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="fecha">
-                    <label for="end-date" class="form-label"><strong>Fecha fin:</strong></label>
-                    <input class="form-control" name="end-date" type="date" id="end-date">
-                </div>
-            </div>
-            <div class="row">
                 <div class="col g-2">
                     <a id="btnContinuar" class="btn btn-primary retornar">Continuar</a>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
 
         <div id="content-div">
 
             <div id="btnType" class="row">
-                <h6 id="tx-desc">2. Selecciona el tipo de producto que desea actualizar:</h6>
+                <h6>2. Selecciona el tipo de producto que desea actualizar:</h6>
 
-                <div class="col">
-                    <button value="motos" id="btnType-moto" class="opcion shadow">
-                        <img src="./assets/images/motorbike.svg" alt="motorbike" class="img_moto">
-                        <b>Motocicletas</b>
-                    </button>
+                <div class="col seleccion">
+                    <div class="row">
+                        <img src="./assets/images/motorbike.svg" id="btnType-moto" alt="motorbike" class="opcion img_moto">
+                    </div>
+                    <div class="row">
+                        <b class="label">Motocicletas</b>
+                    </div>
                 </div>
-                <div class="col">
-                    <button id="btnType-repuestos" value="repuestos" class="opcion shadow">
-                        <img src="./assets/images/car-parts.svg" alt="repuestos" class="img_repuestos">
-                        <b>Repuestos</b>
-                    </button>
+                <div class="col seleccion">
+                    <div class="row">
+                        <img src="./assets/images/car-parts.svg" id="btnType-repuestos" alt="repuestos" class="opcion img_repuestos">
+                    </div>
+                    <div class="row">
+                        <b class="label">Repuestos</b>
+                    </div>
                 </div>
             </div>
 
             <div id="odoo">
-                <h6 id="text-ini">3. Adjunta el documento que descargaste desde ODOO.</h6>
+                <h6>3. Adjunta el documento que descargaste desde ODOO.</h6>
                 <form id="uploadForm1" action="/" enctype=multipart/form-data method="post">
                     <div class="input-group">
                         <input type="file" class="form-control" accept=".xlsx" id="odoo-fileInput">
@@ -103,7 +111,7 @@
             </div>
 
             <div id="vendor">
-                <h6 id="text-ini">4. Adjunta el archivo excel del proveedor.</h6>
+                <h6>4. Adjunta el archivo excel del proveedor.</h6>
                 <form id="uploadForm2" enctype=multipart/form-data method="post">
                     <div class="input-group">
                         <input type="file" class="form-control" accept=".xlsx" id="vendor-fileInput">
@@ -126,7 +134,7 @@
             </div>
 
             <form class="row g-2" id="groupRefsModels">
-                <h6 id="tx-desc">4. Selecciona los vehículos que quieres actualizar.</h6>
+                <h6>4. Selecciona los vehículos que quieres actualizar.</h6>
 
                 <div class="col-md-4">
                     <label for="input-refs" class="form-label"><strong>Lista de Referencias:</strong></label>
@@ -148,11 +156,10 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-12 g-2">
-                        <a id="agregar-info" class="btn btn-primary">Agregar</a>
-                        <a id="return-page" class="btn btn-danger">Volver a cargar</a>
-                    </div>
+                <!-- <div class="col g-2" id="btns"> -->
+                <div class="d-flex justify-content-around">
+                    <a id="agregar-info" class="btn btn-primary">Agregar</a>
+                    <a id="return-page" class="btn btn-danger">Volver a cargar</a>
                 </div>
 
             </form>
@@ -183,20 +190,19 @@
                     </tfoot> -->
                 </table>
                 <div class="d-flex justify-content-around">
-                    <button class="btn btn-success" id="confirmar">Confirmar </button>
+                    <a class="btn btn-success" id="confirmar">Confirmar </a>
 
-                    <button class="btn btn-danger" id="vaciar-todo">Vaciar</button>
+                    <a class="btn btn-danger" id="vaciar-todo">Vaciar</a>
                 </div>
             </div>
 
-            <div class="progress" id="progressBarVendor">
-                <div id="barVendor" class="bar">Cargando...</div>
-            </div>
 
 
             <div class="row" id="cards-info">
-                <div class="progress" id="progressBarVendor">
-                    <div id="barVendor" class="bar">0%</div>
+                <div class="container">
+                    <div class="progress" id="progressBarVendor">
+                        <div id="barVendor" class="bar">Cargando...</div>
+                    </div>
 
                 </div>
 
@@ -294,10 +300,8 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col g-2">
-                    <a id="confirmarTodo" class="btn btn-success">Generar Documento</a>
-                </div>
+            <div class="col g-2">
+                <a id="confirmarTodo" class="btn btn-success">Generar Documento</a>
             </div>
 
             <div id="descarga" class="col-12 g-2">
@@ -305,17 +309,18 @@
             </div>
 
         </div>
-    </div>
+
     </div>
 
 
     <footer class="bg-light text-center text-lg-start">
-        <!-- Copyright -->
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-            © 2021 Copyright:
-            <a class="text-dark" href="https://sofoz.com.co">sofoz.com.co</a>
+        <div class="data row">
+            <p class="col">Elaborado por: <a href="https://www.sofoz.com.co/"><strong>Nodier Alexander Vasquez</strong></a></p>
+            <p class="col">Revisado por: <strong>Weimar Moises Álvarez</strong></p>
         </div>
-        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2021 Copyright: <strong>Grupo Empresarial Camacho</strong>
+        </div>
     </footer>
 
     <template id="template-lista">

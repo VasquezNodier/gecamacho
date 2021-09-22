@@ -375,7 +375,7 @@ function pintarTabla() {
 
 
 
-$(document).on('click', 'button#confirmar', function(e) {
+$(document).on('click', 'a#confirmar', function(e) {
     newProducto = {}
     actualizar.splice(0)
     if (listaProductos.length !== 0) {

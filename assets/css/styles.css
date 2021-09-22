@@ -1,28 +1,44 @@
-* {
-    box-sizing: border-box;
+.data {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    margin: auto;
 }
 
-body {
-    font-family: 'Roboto', sans-serif;
-}
-
-header {
-    padding: 20px 10px 20px 10px;
-}
-
-h3,
-h5 {
+p {
     text-align: center;
-    color: #B83D1A;
+    opacity: 0.6;
+    font-size: .8rem;
 }
 
-#content-div {
-    /* padding: 10px; */
-    /* background-color: coral; */
+#contenedor {
+    position: relative;
+    top: 10px;
+    margin: auto;
+    left: 0;
+    right: 0;
+    background-color: #f4d45e4b;
+    border-radius: 50px;
+}
+
+h4 {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #ffffff;
+}
+
+a.navbar-brand {
+    margin-left: 10px;
 }
 
 h6 {
-    line-height: 3;
+    color: #941C2F;
+    padding-top: 20px;
+    line-height: 2;
+    text-align: center;
 }
 
 #odoo {
@@ -45,7 +61,9 @@ h6 {
     display: none;
 }
 
-label {}
+.seleccion {
+    margin-top: 20px;
+}
 
 #groupRefsModels {
     display: none;
@@ -79,33 +97,21 @@ label {}
     background-color: #B1F06D90;
 }
 
-button {
-    border: none;
+.label {
+    position: relative;
+    top: -1.7rem;
 }
 
-button:hover {
+img:hover {
     background-color: #ED8668;
 }
 
-b {
-    position: absolute;
-    bottom: 3px;
-    left: 0;
-    right: 0;
-}
-
 #content-div {
-    /* display: none; */
-    margin-bottom: 50px;
-}
-
-html {
-    min-height: 100%;
-    position: relative;
+    margin-bottom: 70px;
 }
 
 footer {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
 }
@@ -115,9 +121,17 @@ footer {
     margin: auto;
 }
 
-#cards-info,
+#cards-info {
+    display: none;
+}
+
 #confirmarTodo {
     display: none;
+    margin: 20px;
+}
+
+#btnContinuar {
+    margin: 20px;
 }
 
 .descargar {
@@ -125,29 +139,38 @@ footer {
 }
 
 .progress {
-    margin: 10px 0 10px 0;
+    margin: 30px 0px 20px 0px;
     height: 30px;
     display: none;
 }
 
 form {
-    margin: 20px 0 0 0;
+    margin: 2rem 0 0 0;
 }
 
 #barVendor {
     width: 1%;
-    background-color: limegreen;
+    background-color: #32CD32;
     padding-left: 10px;
     font-size: 1.2rem;
 }
 
-.retornar {
-    margin-top: 30px;
+.retornar,
+#btns,
+#confirmar,
+#vaciar-todo,
+#agregar-info,
+#return-page {
+    margin: 20px;
+}
+
+div.text-center {
+    margin-top: 10px;
 }
 
 @media only screen and (max-width: 400px) {
     .opcion {
-        position: relative;
+        /* position: relative; */
         border-radius: 20%;
         left: 0;
         right: 0;
@@ -155,9 +178,26 @@ form {
         right: 0;
         margin: auto;
         width: 9rem;
-        background-color: #B1F06D90;
+        height: 9rem;
     }
     button img {
         width: 6rem;
+    }
+    p {
+        font-size: .5rem;
+    }
+    h4 {
+        padding-right: 1rem;
+        position: relative;
+        font-size: 1.2rem;
+        right: 0;
+        color: #ffffff;
+    }
+    .seleccion {
+        margin-top: 10px;
+    }
+    .retornar,
+    #btns {
+        margin: 20px;
     }
 }

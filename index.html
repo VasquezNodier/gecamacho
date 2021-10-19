@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 <div class="col g-2">
-                    <a id="btnContinuar" class="btn btn-primary retornar">Continuar</a>
+                    <a id="btnContinuar" class="btn btn-primary retornar mrg">Continuar</a>
                 </div>
             </form>
         </div>
@@ -93,6 +93,8 @@
 
             <div id="odoo">
                 <h6>3. Adjunta el documento que descargaste desde ODOO.</h6>
+                <p>El documento debe contener los siguientes campos: </p>
+                <p><strong>ID externo, Referencia Interna, Nombre, Es Vehículo, Tipo de Productos, Atributos del Valor</strong></p>
                 <form id="uploadForm1" action="/" enctype=multipart/form-data method="post">
                     <div class="input-group">
                         <input type="file" class="form-control" accept=".xlsx" id="odoo-fileInput">
@@ -129,74 +131,70 @@
 
             </div>
 
-            <div class="modal">
-                <!-- Place at bottom of page -->
-            </div>
-
             <form class="row g-2" id="groupRefsModels">
                 <h6>4. Selecciona los vehículos que quieres actualizar.</h6>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label for="input-refs" class="form-label"><strong>Lista de Referencias:</strong></label>
                     <input id="input-refs" name="referencia" class="form-control" type="text" list="referencias" placeholder="Seleccione la referencia">
                     <datalist id="referencias"></datalist>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label for="input-mod" class="form-label"><strong>Lista de Modelos:</strong></label>
                     <input id="input-mod" name="modelo" class="form-control" type="text" list="modelos" placeholder="Seleccione el modelo">
                     <datalist id="modelos"></datalist>
                 </div>
 
-                <div class="col-md-4">
-                    <label for="precio" class="form-label"><strong>Precio</strong></label>
+                <div class="col-md-3">
+                    <label for="impoconsumo" class="form-label"><strong>Tiene Impoconsumo?:</strong></label>
+                    <input id="impoconsumo" name="impoconsumo" class="form-control" type="text" list="list_impo" placeholder="Impuesto de Consumo">
+                    <datalist id="list_impo">
+                        <option value="Si"></option>
+                        <option value="No"></option>
+                    </datalist>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="precio" class="form-label"><strong>Precio de Lista:</strong></label>
                     <div class="input-group mb-3">
                         <span class="input-group-text">$</span>
                         <input type="number" id="precio" name="precio" class="form-control" aria-label="Amount (to the nearest dollar)">
                     </div>
                 </div>
 
-                <!-- <div class="col g-2" id="btns"> -->
+                <!-- <div class="col g-2 mrg" id="btns"> -->
                 <div class="d-flex justify-content-around">
-                    <a id="agregar-info" class="btn btn-primary">Agregar</a>
-                    <a id="return-page" class="btn btn-danger">Volver a cargar</a>
+                    <a id="agregar-info" class="btn btn-primary mrg">Agregar</a>
+                    <a id="return-page" class="btn btn-danger mrg">Volver a cargar</a>
                 </div>
 
             </form>
 
             <div id="div-table">
                 <h5>Productos seleccionados</h5>
-                <table class="table">
+                <table id="tblMotos" class="table">
                     <thead>
                         <tr>
                             <th scope="col">Referencia</th>
                             <th scope="col">Modelo</th>
-                            <th scope="col">Precio</th>
+                            <th scope="col">Impoconsumo</th>
+                            <th scope="col">Precio Lista</th>
+                            <th scope="col">Precio Unitario</th>
                             <th scope="col">Acción</th>
                         </tr>
                     </thead>
                     <tbody id="items"></tbody>
-                    <!-- <tfoot>
-                        <tr id="footer">
-                            <td id="validar" colspan="4">
-                                <button class="btn btn-danger" id="vaciar-todo">
-                                    Vaciar
-                                </button>
-                                <button class="btn btn-success" id="confirmar" data-toggle="modal" data-target="#exampleModalCenter">
-                                    Confirmar
-                                </button>
-                            </td>
-                        </tr>
-                    </tfoot> -->
+             
                 </table>
                 <div class="d-flex justify-content-around">
-                    <a class="btn btn-success" id="confirmar">Confirmar </a>
+                    <a class="btn btn-success mrg" id="confirmar">Confirmar </a>
 
-                    <a class="btn btn-danger" id="vaciar-todo">Vaciar</a>
+                    <a class="btn btn-primary mrg" type="submit" id="imprimir">Imprimir </a>
+
+                    <a class="btn btn-danger mrg" id="vaciar-todo">Vaciar</a>
                 </div>
             </div>
-
-
 
             <div class="row" id="cards-info">
                 <div class="container">
@@ -327,7 +325,9 @@
         <tr>
             <td>Ref Prueba</td>
             <td>Mod Prueba</td>
+            <td>Impoconsumo</td>
             <td>$ <span>500</span></td>
+            <td>$ <span>400</span></td>
             <td>
                 <button class="btn btn-danger btn-sm eliminar-fila" id="eliminar-fila">
                     Borrar
@@ -347,6 +347,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
+    <script type="text/javascript" src="libs/jspdf.min.js"></script>
+    <script type="text/javascript" src="libs/jspdf.plugin.autotable.min.js"></script>
+    <script type="text/javascript" src="libs/tableHTMLExport.js"></script>
+
     <!--JS-->
     <script src="./assets/js/base.js"></script>
     <script src="./assets/js/view.js"></script>

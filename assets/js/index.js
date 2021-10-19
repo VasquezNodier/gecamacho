@@ -84,7 +84,7 @@ let processExcel = (data) => {
     if (doc_proveedor === true) {
         procesar_proveedor(excelRows);
 
-    } else if (es_moto === true) {
+    } else if (esMoto === true) {
         procesar_moto(excelRows);
     } else {
         procesar_repuestos(excelRows);
@@ -102,7 +102,7 @@ function procesar_moto(motos) {
     //Add the data rows from Excel file.
     for (var i = 0; i < motos.length; i++) {
         //Add the data row.
-        if (motos[i]['Atributos del Valor'] !== 'FALSE' && es_moto) {
+        if (motos[i]['Atributos del Valor'] !== 'FALSE' && esMoto) {
             if (i % 2 == 0) {
                 prod = motos[i]
             } else {
@@ -316,7 +316,6 @@ function obtener_datos(productos) {
     document.getElementById('agregar-info').addEventListener('click', e => {
 
         let obj = Array.from(document.querySelectorAll('#groupRefsModels input')).reduce((acc, input) => ({...acc, [input.name]: input.value }), {});
-
         if (obj.referencia && obj.modelo && obj.precio) {
             let esCorrecto = false;
             productos.forEach(element => {
@@ -356,7 +355,9 @@ function pintarTabla() {
     listaProductos.forEach(element => {
         templateLista.querySelectorAll('td')[0].textContent = element.referencia;
         templateLista.querySelectorAll('td')[1].textContent = element.modelo;
-        templateLista.querySelectorAll('td')[2].textContent = element.precio.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        templateLista.querySelectorAll('td')[2].textContent = (element.impoconsumo === 'Si' ? '8%':'');
+        templateLista.querySelectorAll('td')[3].textContent = element.precio.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        templateLista.querySelectorAll('td')[4].textContent = element.impoconsumo === 'No' ? (element.precio / 1.19).toFixed(2) : (element.precio /1.27).toFixed(2);
         templateLista.querySelector('#eliminar-fila').dataset.id = listaProductos.indexOf(element);
 
         let clone = templateLista.cloneNode(true);
@@ -376,8 +377,7 @@ function pintarTabla() {
 
 
 $(document).on('click', 'a#confirmar', function(e) {
-    newProducto = {}
-    actualizar.splice(0)
+    console.log('lista', listaProductos.length,listaProductos);
     if (listaProductos.length !== 0) {
         tablaProducto.style.display = 'none';
         grSelect1.style.display = 'none';
@@ -402,7 +402,7 @@ btnGenerarEncontrados.onclick = (e) => {
 
         if (fila == 1) {
             newProducto['company'] = company;
-            newProducto['Lista de precios'] = getListName(inicio);
+            newProducto['Lista de precios'] = getListName(inicio, esMoto);
             newProducto['Política de descuento'] = 'Descuento incluido en el precio';
             newProducto['item_ids/applied_on'] = 'Variantes de producto';
             newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = elemento['id'];
@@ -439,7 +439,7 @@ btnGenerarEncontrados.onclick = (e) => {
 
 
 btnDescargar.onclick = (e) => {
-    newProducto = {}
+    
     id = '';
     actualizar.splice(0);
     if (listaProductos.length !== 0) {
@@ -448,39 +448,33 @@ btnDescargar.onclick = (e) => {
         listaProductos.forEach(lista => {
             original_productos.forEach(original => {
                 if (lista.referencia === original['Referencia Interna'] && lista.modelo === original['Atributos del Valor']) {
-                    id = original['ID']
-                    delete original['Atributos del Valor'];
-                    delete original['Nombre'];
-                    delete original['Referencia Interna'];
-                    delete original['Es vehículo'];
-                    delete original['Tipo de producto'];
-                    newProducto = original;
+                    newProducto = {}
+
                     if (fila == 1) {
-                        delete newProducto['ID'];
                         newProducto['company'] = company;
-                        newProducto['Lista de precios'] = getListName(inicio);
+                        newProducto['Lista de precios'] = getListName(inicio, esMoto);
                         newProducto['Política de descuento'] = 'Descuento incluido en el precio';
                         newProducto['item_ids/applied_on'] = 'Variantes de producto';
-                        newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = id;
+                        newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = original['ID externo'];
                         newProducto['item_ids/min_quantity'] = 1;
                         newProducto['item_ids/date_start'] = inicio;
                         newProducto['item_ids/date_end'] = fin;
                         newProducto['item_ids/compute_price'] = 'Fixed Price';
-                        newProducto['item_ids/fixed_price'] = lista.precio;
+                        newProducto['item_ids/fixed_price'] = lista.impoconsumo === 'Si' ? (lista.precio/1.27).toFixed(2) : (lista.precio/1.19).toFixed(2);
                         actualizar.push(newProducto);
 
                     } else {
-                        delete newProducto['ID'];
+                        delete newProducto['ID externo'];
                         newProducto['company'] = '';
                         newProducto['Lista de precios'] = '';
                         newProducto['Política de descuento'] = '';
                         newProducto['item_ids/applied_on'] = 'Variantes de producto';
-                        newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = id;
+                        newProducto['Líneas de la lista de precios/Variantes de producto/ID externo'] = original['ID externo'];
                         newProducto['item_ids/min_quantity'] = 1;
                         newProducto['item_ids/date_start'] = inicio;
                         newProducto['item_ids/date_end'] = fin;
                         newProducto['item_ids/compute_price'] = 'Fixed Price';
-                        newProducto['item_ids/fixed_price'] = lista.precio;
+                        newProducto['item_ids/fixed_price'] = lista.impoconsumo === 'Si' ?( lista.precio/1.27).toFixed(2) : (lista.precio/1.19).toFixed(2);
                         actualizar.push(newProducto);
                     }
                     fila++;

@@ -11,6 +11,7 @@ let btnAgregar = _('agregar-info');
 let btnReturn = _('return-page');
 let btnConfirmar = _('confirmar');
 let btnDescargar = _('confirmarTodo');
+let btnImprimir = _('imprimir')
 let btnGenerarEncontrados = _('generar-encontrados');
 let btnGenerarHomologados = _('generar-homologados');
 let btnGenerarNoEncontrados = _('generar-noEncontrados');
@@ -53,13 +54,13 @@ btnContinuar.onclick = () => {
 btnMoto.onclick = () => {
     _('titulo').innerHTML = 'Actualización de precios de Motocicletas';
     change_visual();
-    es_moto = true
+    esMoto = true
 }
 
 btnRepuestos.onclick = () => {
     _('titulo').innerHTML = 'Actualización de precios de Repuestos';
     change_visual();
-    es_moto = false
+    esMoto = false
 }
 
 //Change visual elements

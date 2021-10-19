@@ -155,12 +155,7 @@ form {
     font-size: 1.2rem;
 }
 
-.retornar,
-#btns,
-#confirmar,
-#vaciar-todo,
-#agregar-info,
-#return-page {
+.mrg {
     margin: 20px;
 }
 
@@ -186,6 +181,7 @@ div.text-center {
     p {
         font-size: .5rem;
     }
+
     h4 {
         padding-right: 1rem;
         position: relative;

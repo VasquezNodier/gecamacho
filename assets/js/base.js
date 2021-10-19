@@ -134,7 +134,7 @@ $('#imprimir').on('click', function (e) {
     e.preventDefault();
     $('#tblMotos').tableHTMLExport({
         type:'pdf',
-        filename:'motos.pdf'
+        filename:'Motos.pdf'
     });
     
 });

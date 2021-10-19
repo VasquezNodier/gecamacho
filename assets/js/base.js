@@ -1,3 +1,4 @@
+
 function _(el) {
     return document.getElementById(el);
 }
@@ -60,40 +61,40 @@ const comparaFecha = (fecha1, fecha2) => {
     }
 }
 
-const getListName = (inicio) => {
+const getListName = (inicio, esMoto) => {
     const segundos = Date.now();
-    inicio = new Date(inicio);
+    fecha = new Date(inicio);
 
-    let nombre = 'Precios ';
+    let nombre = 'Lista de Precios ';
     let periodo = '',
         mes = '',
         hora = '',
         dia = '';
 
-    if (inicio.getUTCDate() > 15) {
+    if (fecha.getUTCDate() > 15) {
         periodo = 'L2';
     } else {
         periodo = 'L1';
     }
-    if (inicio.getUTCDate() > 9) {
-        dia = inicio.getUTCDate();
+    if (fecha.getUTCDate() > 9) {
+        dia = fecha.getUTCDate();
     } else {
-        dia = '0' + inicio.getUTCDate();
+        dia = '0' + fecha.getUTCDate();
     }
-    if (inicio.getMonth() + 1 > 9) {
-        mes = inicio.getMonth() + 1;
+    if (fecha.getMonth() + 1 > 9) {
+        mes = fecha.getMonth() + 1;
     } else {
-        mes = '0' + (inicio.getMonth() + 1);
-    }
-
-    if (inicio.getHours() > 9) {
-        hora = inicio.getHours();
-    } else {
-        hora = '0' + inicio.getHours();
+        mes = '0' + (fecha.getMonth() + 1);
     }
 
-    nombre += mes + '-' + periodo + ' ' + dia + hora;
-    return nombre;
+    if (fecha.getHours() > 9) {
+        hora = fecha.getHours();
+    } else {
+        hora = '0' + fecha.getHours();
+    }
+
+    nombre += mes + '-' + periodo + ' ' + dia + hora + ' | ';
+    return esMoto ? nombre + 'Motocicletas' : nombre + 'Repuestos';
 }
 
 // Verificar si se ingresa un archivo con la extensión apropiada.
@@ -108,7 +109,7 @@ const validDocument = (name) => {
 }
 
 // Descargamos el documento con el nombre product.csv
-const download = function(data) {
+const download = function (data) {
     const blob = new Blob(["\uFEFF" + data], { type: '"text/csv; charset=utf-8"' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -128,3 +129,12 @@ const borrarFila = (e) => {
     }
     pintarTabla();
 }
+
+$('#imprimir').on('click', function (e) {
+    e.preventDefault();
+    $('#tblMotos').tableHTMLExport({
+        type:'pdf',
+        filename:'motos.pdf'
+    });
+    
+});

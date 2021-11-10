@@ -1,4 +1,4 @@
-let empresas = ['Nelson Damián Camacho Suarez', 'Mundo Cross LTDA', 'MWO S.A.S', 'Mundo Cross Bogotá S.A.S', 'Moto World Oriente S.A.S.']
+let empresas = ['Nelson Damián Camacho Suarez', 'Mundo Cross LTDA', 'MWO S.A.S', 'Mundo Cross Bogotá S.A.S', 'Moto World Oriente S.A.S.', 'Mundo Cross Oriente LTDA']
 
 let lstCompany = _('company');
 
@@ -76,7 +76,7 @@ btnOdooUp.addEventListener("click", () => {
         upload_doc(inputOdooDoc.files[0]);
     } else {
         alert('¡Por favor cargue el archivo!');
-        refreshPage();
+        // refreshPage();
     }
 });
 
@@ -97,6 +97,6 @@ btnVendorUp.addEventListener("click", () => {
 
     } else {
         alert('¡Por favor cargue el archivo!');
-        refreshPage();
+        // refreshPage();
     }
 });

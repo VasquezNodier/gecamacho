@@ -1,4 +1,4 @@
-
+//Cambio de la forma del getElementById
 function _(el) {
     return document.getElementById(el);
 }

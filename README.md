@@ -13,8 +13,8 @@ En el que se implementa algoritmo de búsqueda secuencial para la comparación d
 ### Cración de lista de precios de Moticicletas
 
 
-3. Si seleccionan motocicletas deben escoger modelos, referencias y el precio de las mismas.
-4. Finalmente, el usuario procede a descargar el documento CSV, generado por la página para proceder a importarlo nuevamente en ODOO y de esta forma crear una nueva lista de precios.
+4. Si seleccionan motocicletas deben escoger modelos, referencias y el precio de las mismas, además debe seleccionar si la motocicleta contiene impuesto de consumo o no.
+5. Finalmente, el usuario procede a descargar el documento CSV, generado por la página para proceder a importarlo nuevamente en ODOO y de esta forma crear una nueva lista de precios.
 
 ### Cración de lista de precios de Repuestos
 

@@ -5,8 +5,6 @@ let homologados = [],
 self.addEventListener('message', function(evt) {
     let proveedor = evt.data.prov;
     let repuestos = evt.data.reps;
-
-    console.log(proveedor);
     
     let i = 0;
     

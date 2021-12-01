@@ -22,12 +22,12 @@ self.addEventListener('message', function(evt) {
         } else if (element['Referencia Interna'] === proveedor[hay]['PARTE No.']) {
             obj['id'] = element['ID']
             obj['default_code'] = element['Referencia Interna']
-            obj['precio'] = proveedor[hay]['PRECIO SUGERIDO AL PÚBLICO INCLUIDO IMPUESTOS']
+            obj['precio'] = proveedor[hay]['PRECIO SUGERIDO AL PÚBLICO ANTES DE IMPUESTOS']
             family.push(obj)
         } else if (proveedor[hay]['HOMOLOGACIONES'].includes(element['Referencia Interna'])) {
             obj['id'] = element['ID']
             obj['default_code'] = element['Referencia Interna']
-            obj['precio'] = proveedor[hay]['PRECIO SUGERIDO AL PÚBLICO INCLUIDO IMPUESTOS']
+            obj['precio'] = proveedor[hay]['PRECIO SUGERIDO AL PÚBLICO ANTES DE IMPUESTOS']
 
             family.push(obj)
             homo['ID ODOO'] = element['ID']
@@ -35,7 +35,7 @@ self.addEventListener('message', function(evt) {
             homo['NOMBRE ODOO'] = element['Nombre']
             homo['REFERENCIA FAMILY'] = proveedor[hay]['PARTE No.']
             homo['NOMBRE FAMILY'] = proveedor[hay]['DESCRIPCIÓN']
-            homo['PRECIO'] = parseInt(proveedor[hay]['PRECIO SUGERIDO AL PÚBLICO INCLUIDO IMPUESTOS'].replace(',', ''));
+            homo['PRECIO'] = parseInt(proveedor[hay]['PRECIO SUGERIDO AL PÚBLICO ANTES DE IMPUESTOS'].replace(',', ''));
 
 
             homologados.push(homo)
